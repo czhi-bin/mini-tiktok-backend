@@ -1,564 +1,576 @@
-# mini-tiktok-backend
+# **API Documentation**
+## Basic Interfaces
 
-# 三、**接口说明**
-##  3.1  基础接口
-抖音最基础的功能实现，支持所有用户刷抖音视频，同时允许用户注册账号，发布自己拍摄的视频，发布后的视频能够被其他人刷到。
+These are the fundamental features of Douyin (Chinese version of TikTok) implemented in the backend. It supports all users to browse Douyin videos, allows users to register accounts, publish their own videos, and lets others view these published videos.
 
-**/douyin/feed/ - 视频流接口**
+**/douyin/feed/ - Video Feed Interface**
 
-不限制登录状态，返回按投稿时间倒序的视频列表，视频数由服务端控制，单次最多30个。
+This interface provides a video feed without requiring a login. It returns a list of videos in reverse chronological order based on submission time. The number of videos in a single response is controlled by the server, with a maximum of 30 videos.
 
-**接口类型**: GET 
+**Endpoint**: GET 
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.core;
 
 message douyin_feed_request {
-  optional int64 latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
-  optional string token = 2； // 可选参数，登录用户设置
+  optional int64 latest_time = 1;     // Optional parameter to limit the latest submission 
+                                      // time of returned videos, accurate to seconds. 
+                                      // Not filling it means the current time.
+  optional string token = 2；         // Optional parameter for logged-in users.
 }
 
 message douyin_feed_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated Video video_list = 3; // 视频列表
-  optional int64 next_time = 4; // 本次返回的视频中，发布最早的时间，作为下次请求时的latest_time
+  required int32 status_code = 1;     // Status code. 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
+  repeated Video video_list = 3;      // List of videos.
+  optional int64 next_time = 4;       // The earliest submission time among the videos returned this time, 
+                                      // used as 'latest_time' for the next request. 
 }
 
 message Video {
-  required int64 id = 1; // 视频唯一标识
-  required User author = 2; // 视频作者信息
-  required string play_url = 3; // 视频播放地址
-  required string cover_url = 4; // 视频封面地址
-  required int64 favorite_count = 5; // 视频的点赞总数
-  required int64 comment_count = 6; // 视频的评论总数
-  required bool is_favorite = 7; // true-已点赞，false-未点赞
-  required string title = 8; // 视频标题
+  required int64 id = 1;                // Unique identifier for the video.
+  required User author = 2;             // Video author information.
+  required string play_url = 3;         // Video playback URL.
+  required string cover_url = 4;        // Video cover image URL.
+  required int64 favorite_count = 5;    // Total number of likes for the video
+  required int64 comment_count = 6;     // Total number of comments on the video
+  required bool is_favorite = 7;        // true - Liked, false - Not liked
+  required string title = 8;            // Video title
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                    // User ID
+  required string name = 2;                 // User name
+  optional int64 follow_count = 3;          // Total number of followings
+  optional int64 follower_count = 4;        // Total number of followers
+  required bool is_follow = 5;              // true - Follwing，false - Not following
+  optional string avatar = 6;               // User avatar
+  optional string background_image = 7;     // User profile page banner image
+  optional string signature = 8;            // Personal bio
+  optional int64 total_favorited = 9;       // Total number of received likes
+  optional int64 work_count = 10;           // Number of works (videos)
+  optional int64 favorite_count = 11;       // Number of likes given
 }
 ```
 
-**/douyin/user/register/ - 用户注册接口**
+**/douyin/user/register/ - User Registration Interface**
 
-新用户注册时提供用户名，密码，昵称即可，用户名需要保证唯一。创建成功后返回用户 id 和权限token.
+This interface is used for new user registration. Users provide a username, password, and nickname. The username must be unique. After successful registration, the user ID and authentication token are returned.
 
-**接口类型:** POST
+**Endpoint:** POST
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.core;
 
 message douyin_user_register_request {
-  required string username = 1; // 注册用户名，最长32个字符
-  required string password = 2; // 密码，最长32个字符
+  required string username = 1;   // Registration username, maximum length of 32 characters.
+  required string password = 2;   // Password, maximum length of 32 characters.
 }
 
 message douyin_user_register_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  required int64 user_id = 3; // 用户id
-  required string token = 4; // 用户鉴权token
+  required int32 status_code = 1;   // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;   // Status description.
+  required int64 user_id = 3;       // User ID.
+  required string token = 4;        // User authentication token.
 }
 ```
 
-**/douyin/user/login/ - 用户登录接口**
+**/douyin/user/login/ - User Login Interface**
 
-通过用户名和密码进行登录，登录成功后返回用户 id 和权限 token.
+This interface is used for user login using a username and password. After successful login, the user ID and authentication token are returned.
 
-**接口类型:** POST
+**Endpoint:** POST
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.core;
 
 message douyin_user_login_request {
-  required string username = 1; // 登录用户名
-  required string password = 2; // 登录密码
+  required string username = 1;   // Login username.
+  required string password = 2;   // Login password.
 }
 
 message douyin_user_login_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  required int64 user_id = 3; // 用户id
-  required string token = 4; // 用户鉴权token
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
+  required int64 user_id = 3;         // User ID.
+  required string token = 4;          // User authentication token.
 }
 ```
 
-**/douyin/user/ - 用户信息**
+**/douyin/user/ - User Information Interface**
 
-获取登录用户的 id、昵称，如果实现社交部分的功能，还会返回关注数和粉丝数。
+This interface is used to retrieve information about the logged-in user, including their ID, nickname. If the interaction functionality is implemented, also return the number of followings and followers.
 
-**接口类型:** GET
+**Endpoint:** GET
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.core;
 
 message douyin_user_request {
-  required int64 user_id = 1; // 用户id
-  required string token = 2; // 用户鉴权token
+  required int64 user_id = 1;   // User ID.
+  required string token = 2;    // User authentication token.
 }
 
 message douyin_user_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  required User user = 3; // 用户信息
+  required int32 status_code = 1;   // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;   // Status description.
+  required User user = 3;           // User information.
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                  // User ID.
+  required string name = 2;               // User name.
+  optional int64 follow_count = 3;        // Total number of followings.
+  optional int64 follower_count = 4;      // Total number of followers.
+  required bool is_follow = 5;            // true - Following, false - Not following.
+  optional string avatar = 6;             // User avatar.
+  optional string background_image = 7;   // User profile page banner image.
+  optional string signature = 8;          // Personal bio.
+  optional int64 total_favorited = 9;     // Total number of received likes.
+  optional int64 work_count = 10;         // Number of works (videos).
+  optional int64 favorite_count = 11;     // Number of likes given.
 }
 ```
 
-**/douyin/publish/action/ - 视频投稿**
+**/douyin/publish/action/ -  Video Publishing Interface**
 
-登录用户选择视频上传。
+This interface allows a logged-in user to upload a video.
 
-**接口类型:** POST
+**Endpoint:** POST
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.core;
 
 message douyin_publish_action_request {
-  required string token = 1; // 用户鉴权token
-  required bytes data = 2; // 视频数据
-  required string title = 3; // 视频标题
+  required string token = 1;    // User authentication token.
+  required bytes data = 2;      // Video data.
+  required string title = 3;    // Video title.
 }
 
 message douyin_publish_action_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
+  required int32 status_code = 1;   // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;   // Status description.
 }
 ```
 
-**/douyin/publish/list/ - 发布列表**
+**/douyin/publish/list/ - Published Video List Interface**
 
-登录用户的视频发布列表，直接列出用户所有投稿过的视频。
+This interface provides a list of videos published by the logged-in user, displaying all submitted videos.
 
-**接口类型:** GET
+**Endpoint:** GET
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.core;
 
 message douyin_publish_list_request {
-  required int64 user_id = 1; // 用户id
-  required string token = 2; // 用户鉴权token
+  required int64 user_id = 1;     // User ID.
+  required string token = 2;      // User authentication token.
 }
 
 message douyin_publish_list_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated Video video_list = 3; // 用户发布的视频列表
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
+  repeated Video video_list = 3;      // List of videos published by the user.
 }
 
 message Video {
-  required int64 id = 1; // 视频唯一标识
-  required User author = 2; // 视频作者信息
-  required string play_url = 3; // 视频播放地址
-  required string cover_url = 4; // 视频封面地址
-  required int64 favorite_count = 5; // 视频的点赞总数
-  required int64 comment_count = 6; // 视频的评论总数
-  required bool is_favorite = 7; // true-已点赞，false-未点赞
-  required string title = 8; // 视频标题
+  required int64 id = 1;                // Unique identifier for the video.
+  required User author = 2;             // Video author information.
+  required string play_url = 3;         // Video playback URL.
+  required string cover_url = 4;        // Video cover image URL.
+  required int64 favorite_count = 5;    // Total number of likes for the video.
+  required int64 comment_count = 6;     // Total number of comments on the video.
+  required bool is_favorite = 7;        // true - Liked, false - Not liked.
+  required string title = 8;            // Video title.
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                    // User ID.
+  required string name = 2;                 // User name.
+  optional int64 follow_count = 3;          // Total number of followings.
+  optional int64 follower_count = 4;        // Total number of followers.
+  required bool is_follow = 5;              // true - Following, false - Not following.
+  optional string avatar = 6;               // User avatar.
+  optional string background_image = 7;     // User profile page banner image.
+  optional string signature = 8;            // Personal bio.
+  optional int64 total_favorited = 9;       // Total number of received likes.
+  optional int64 work_count = 10;           // Number of works (videos).
+  optional int64 favorite_count = 11;       // Number of likes given.
 }
 ```
+---
 
+## Interaction Interfaces
 
-## 3.2  互动接口
-每个登录用户支持点赞，同时维护用户自己的点赞视频列表，在个人信息页中查看。
-所有用户能够查看视频的评论列表，但是只有登录用户能够对视频进行评论。
+These interfaces enable user interactions, such as liking videos and commenting on them. Users can view comment lists, but only logged-in users can post comments.
 
-**/douyin/favorite/action/ - 赞操作**
+**/douyin/favorite/action/ - Like Action Interface**
 
-登录用户对视频的点赞和取消点赞操作。
+This interface allows a logged-in user to like or unlike a video.
 
-**接口类型:** POST
+**Endpoint:** POST
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.first;
 
 message douyin_favorite_action_request {
-  required string token = 1; // 用户鉴权token
-  required int64 video_id = 2; // 视频id
-  required int32 action_type = 3; // 1-点赞，2-取消点赞
+  required string token = 1;          // User authentication token.
+  required int64 video_id = 2;        // Video ID.
+  required int32 action_type = 3;     // 1 - Like, 2 - Unlike.
 }
 
 message douyin_favorite_action_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
 }
 ```
 
-**/douyin/favorite/list/ - 喜欢列表**
+**/douyin/favorite/list/ - Liked Video List Interface**
 
-登录用户的所有点赞视频。
+This interface provides a list of videos that a logged-in user has liked.
 
-**接口类型:** GET
+**Endpoint:** GET
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.first;
 
 message douyin_favorite_list_request {
-  required int64 user_id = 1; // 用户id
-  required string token = 2; // 用户鉴权token
+  required int64 user_id = 1;     // User ID.
+  required string token = 2;      // User authentication token.
 }
 
 message douyin_favorite_list_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated Video video_list = 3; // 用户点赞视频列表
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
+  repeated Video video_list = 3;      // List of videos liked by the user.
 }
 
 message Video {
-  required int64 id = 1; // 视频唯一标识
-  required User author = 2; // 视频作者信息
-  required string play_url = 3; // 视频播放地址
-  required string cover_url = 4; // 视频封面地址
-  required int64 favorite_count = 5; // 视频的点赞总数
-  required int64 comment_count = 6; // 视频的评论总数
-  required bool is_favorite = 7; // true-已点赞，false-未点赞
-  required string title = 8; // 视频标题
+  required int64 id = 1;                // Unique identifier for the video.
+  required User author = 2;             // Video author information.
+  required string play_url = 3;         // Video playback URL.
+  required string cover_url = 4;        // Video cover image URL.
+  required int64 favorite_count = 5;    // Total number of likes for the video.
+  required int64 comment_count = 6;     // Total number of comments on the video.
+  required bool is_favorite = 7;        // true - Liked, false - Not liked.
+  required string title = 8;            // Video title.
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                    // User ID.
+  required string name = 2;                 // User name.
+  optional int64 follow_count = 3;          // Total number of followings.
+  optional int64 follower_count = 4;        // Total number of followers.
+  required bool is_follow = 5;              // true - Following, false - Not following.
+  optional string avatar = 6;               // User avatar.
+  optional string background_image = 7;     // User profile page banner image.
+  optional string signature = 8;            // Personal bio.
+  optional int64 total_favorited = 9;       // Total number of received likes.
+  optional int64 work_count = 10;           // Number of works (videos).
+  optional int64 favorite_count = 11;       // Number of likes given.
 }
 ```
 
-**/douyin/comment/action/ - 评论操作**
+**/douyin/comment/action/ - Comment Action Interface**
 
-登录用户对视频进行评论。
+This interface allows a logged-in user to post or delete comments on a video.
 
-**接口类型:** POST
+**Endpoint:** POST
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.first;
 
 message douyin_comment_action_request {
-  required string token = 1; // 用户鉴权token
-  required int64 video_id = 2; // 视频id
-  required int32 action_type = 3; // 1-发布评论，2-删除评论
-  optional string comment_text = 4; // 用户填写的评论内容，在action_type=1的时候使用
-  optional int64 comment_id = 5; // 要删除的评论id，在action_type=2的时候使用
+  required string token = 1;            // User authentication token.
+  required int64 video_id = 2;          // Video ID.
+  required int32 action_type = 3;       // 1 - Post comment, 2 - Delete comment.
+  optional string comment_text = 4;     // Comment text provided by the user, used when action_type=1.
+  optional int64 comment_id = 5;        // Comment ID to delete, used when action_type=2.
 }
 
 message douyin_comment_action_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  optional Comment comment = 3; // 评论成功返回评论内容，不需要重新拉取整个列表
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
+  optional Comment comment = 3;       // Comment content returned for successful comment posting, 
+                                      // no need to fetch the entire list again.
 }
 
 message Comment {
-  required int64 id = 1; // 视频评论id
-  required User user =2; // 评论用户信息
-  required string content = 3; // 评论内容
-  required string create_date = 4; // 评论发布日期，格式 mm-dd
+  required int64 id = 1;              // Comment ID.
+  required User user = 2;             // Commenting user information.
+  required string content = 3;        // Comment content.
+  required string create_date = 4;    // Comment creation date in the format mm-dd.
 }
 ```
 
-**/douyin/comment/list/ - 视频评论列表**
+**/douyin/comment/list/ - Video Comment List Interface**
 
-查看视频的所有评论，按发布时间倒序。
+This interface allows users to view all comments on a video, ordered by reverse chronological order based on posting time.
 
-**接口类型:** GET
+**Endpoint:** GET
 
-**接口定义**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.first;
 
 message douyin_comment_list_request {
-  required string token = 1; // 用户鉴权token
-  required int64 video_id = 2; // 视频id
+  required string token = 1;      // User authentication token.
+  required int64 video_id = 2;    // Video ID.
 }
 
 message douyin_comment_list_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated Comment comment_list = 3; // 评论列表
+  required int32 status_code = 1;       // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;       // Status description.
+  repeated Comment comment_list = 3;    // Comment list.
 }
 
 message Comment {
-  required int64 id = 1; // 视频评论id
-  required User user =2; // 评论用户信息
-  required string content = 3; // 评论内容
-  required string create_date = 4; // 评论发布日期，格式 mm-dd
+  required int64 id = 1;              // Comment ID.
+  required User user = 2;             // Commenting user information.
+  required string content = 3;        // Comment content.
+  required string create_date = 4;    // Comment creation date in the format mm-dd.
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                    // User ID.
+  required string name = 2;                 // User name.
+  optional int64 follow_count = 3;          // Total number of followings.
+  optional int64 follower_count = 4;        // Total number of followers.
+  required bool is_follow = 5;              // true - Following, false - Not following.
+  optional string avatar = 6;               // User avatar.
+  optional string background_image = 7;     // User profile page banner image.
+  optional string signature = 8;            // Personal bio.
+  optional int64 total_favorited = 9;       // Total number of received likes.
+  optional int64 work_count = 10;           // Number of works (videos).
+  optional int64 favorite_count = 11;       // Number of likes given.
 }
+
 ```
 
+--- 
 
-## 3.3  社交接口
-实现用户之间的关注关系维护，登录用户能够关注或取关其他用户，同时自己能够看到自己关注过的所有用户列表，以及所有关注自己的用户列表。
+## Relation Interfaces
 
-**/douyin/relation/action/ - 关系操作**
+These interfaces handle user relationships, allowing users to follow and unfollow each other. Logged-in users can see their own following and follower lists.
 
-登录用户对其他用户进行关注或取消关注。
+**/douyin/relation/action/ - Relationship Action Interface**
 
-**接口类型:** POST
+This interface allows a logged-in user to follow or unfollow another user.
 
-**接口说明**
+**Endpoint:** POST
+
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.second;
 
 message douyin_relation_action_request {
-  required string token = 1; // 用户鉴权token
-  required int64 to_user_id = 2; // 对方用户id
-  required int32 action_type = 3; // 1-关注，2-取消关注
+  required string token = 1;          // User authentication token.
+  required int64 to_user_id = 2;      // Target user ID.
+  required int32 action_type = 3;     // 1 - Follow, 2 - Unfollow.
 }
 
 message douyin_relation_action_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
+  required int32 status_code = 1; // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2; // Status description.
 }
 ```
 
-**/douyin/relatioin/follow/list/ - 用户关注列表**
+**/douyin/relatioin/follow/list/ - User Following List Interface**
 
-登录用户关注的所有用户列表。
+This interface provides a list of users that a logged-in user is following.
 
-**接口类型:** GET
+**Endpoint:** GET
 
-**接口说明**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.second;
 
 message douyin_relation_follow_list_request {
-  required int64 user_id = 1; // 用户id
-  required string token = 2; // 用户鉴权token
+  required int64 user_id = 1;     // User ID.
+  required string token = 2;      // User authentication token.
 }
 
 message douyin_relation_follow_list_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated User user_list = 3; // 用户信息列表
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
+  repeated User user_list = 3;        // List of user information.
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                    // User ID.
+  required string name = 2;                 // User name.
+  optional int64 follow_count = 3;          // Total number of followings.
+  optional int64 follower_count = 4;        // Total number of followers.
+  required bool is_follow = 5;              // true - Following, false - Not following.
+  optional string avatar = 6;               // User avatar.
+  optional string background_image = 7;     // User profile page banner image.
+  optional string signature = 8;            // Personal bio.
+  optional int64 total_favorited = 9;       // Total number of received likes.
+  optional int64 work_count = 10;           // Number of works (videos).
+  optional int64 favorite_count = 11;       // Number of likes given.
 }
 ```
 
-**/douyin/relation/follower/list/ - 用户粉丝列表**
+**/douyin/relation/follower/list/ - User Follower List Interface**
 
-所有关注登录用户的粉丝列表。
+This interface provides a list of users who follow a logged-in user.
 
-**接口类型:** GET
+**Endpoint:** GET
 
-**接口说明**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.second;
 
 message douyin_relation_follower_list_request {
-  required int64 user_id = 1; // 用户id
-  required string token = 2; // 用户鉴权token
+  required int64 user_id = 1;     // User ID.
+  required string token = 2;      // User authentication token.
 }
 
 message douyin_relation_follower_list_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated User user_list = 3; // 用户列表
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
+  repeated User user_list = 3;        // List of user information.
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                    // User ID.
+  required string name = 2;                 // User name.
+  optional int64 follow_count = 3;          // Total number of followings.
+  optional int64 follower_count = 4;        // Total number of followers.
+  required bool is_follow = 5;              // true - Following, false - Not following.
+  optional string avatar = 6;               // User avatar.
+  optional string background_image = 7;     // User profile page banner image.
+  optional string signature = 8;            // Personal bio.
+  optional int64 total_favorited = 9;       // Total number of received likes.
+  optional int64 work_count = 10;           // Number of works (videos).
+  optional int64 favorite_count = 11;       // Number of likes given.
 }
 ```
 
-**/douyin/relation/friend/list/ - 用户好友列表**
+**/douyin/relation/friend/list/ - User Friend List Interface**
 
-所有关注登录用户的粉丝列表。
+This interface provides a list of users who are friends of a logged-in user.
 
-**接口类型:** GET
+**Endpoint:** GET
 
-**接口说明**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.second;
 
 message douyin_relation_friend_list_request {
-  required int64 user_id = 1; // 用户id
-  required string token = 2; // 用户鉴权token
+  required int64 user_id = 1;     // User ID.
+  required string token = 2;      // User authentication token.
 }
 
 message douyin_relation_friend_list_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated FriendUser user_list = 3; // 用户列表
+  required int32 status_code = 1;       // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;       // Status description.
+  repeated FriendUser user_list = 3;    // List of user information.
 }
 
 message User {
-  required int64 id = 1; // 用户id
-  required string name = 2; // 用户名称
-  optional int64 follow_count = 3; // 关注总数
-  optional int64 follower_count = 4; // 粉丝总数
-  required bool is_follow = 5; // true-已关注，false-未关注
-  optional string avatar = 6; //用户头像
-  optional string background_image = 7; //用户个人页顶部大图
-  optional string signature = 8; //个人简介
-  optional int64 total_favorited = 9; //获赞数量
-  optional int64 work_count = 10; //作品数量
-  optional int64 favorite_count = 11; //点赞数量
+  required int64 id = 1;                    // User ID.
+  required string name = 2;                 // User name.
+  optional int64 follow_count = 3;          // Total number of followings.
+  optional int64 follower_count = 4;        // Total number of followers.
+  required bool is_follow = 5;              // true - Following, false - Not following.
+  optional string avatar = 6;               // User avatar.
+  optional string background_image = 7;     // User profile page banner image.
+  optional string signature = 8;            // Personal bio.
+  optional int64 total_favorited = 9;       // Total number of received likes.
+  optional int64 work_count = 10;           // Number of works (videos).
+  optional int64 favorite_count = 11;       // Number of likes given.
 }
 
 message FriendUser extends User {
-    optional string message = 1; // 和该好友的最新聊天消息
-    required int64 msgType = 2; // message消息的类型，0 => 当前请求用户接收的消息， 1 => 当前请求用户发送的消息
+    optional string message = 1;    // Most recent chat message with this friend.
+    required int64 msgType = 2;     // Type of message: 
+                                    // 0 => Message received by the current requesting user, 
+                                    // 1 => Message sent by the current requesting user.
 }
 ```
-### 消息
-客户端通过定时轮询服务端接口查询消息记录
 
-**/douyin/message/chat/ - 聊天记录**
+--- 
 
-当前登录用户和其他指定用户的聊天消息记录
+## Messaging Interfaces
 
-**接口类型:** GET
+The client queries message records from the server through periodic polling.
 
-**接口说明**
+**/douyin/message/chat/ - Chat Records**
+
+Chat message records between the currently logged-in user and a specified user.
+
+**Endpoint:** GET
+
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.second;
 
 message douyin_message_chat_request {
-  required string token = 1; // 用户鉴权token
-  required int64 to_user_id = 2; // 对方用户id
-  required int64 pre_msg_time=3;//上次最新消息的时间（新增字段-apk更新中）
+  required string token = 1;          // User authentication token.
+  required int64 to_user_id = 2;      // ID of the other user.
+  required int64 pre_msg_time = 3;    // Timestamp of the latest previous message (new field - added in APK update).
 }
 
 message douyin_message_chat_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
-  repeated Message message_list = 3; // 消息列表
+  required int32 status_code = 1;       // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;       // Status description.
+  repeated Message message_list = 3;    // List of messages.
 }
 
 message Message {
-  required int64 id = 1; // 消息id
-  required int64 to_user_id = 2; // 该消息接收者的id
-  required int64 from_user_id =3; // 该消息发送者的id
-  required string content = 4; // 消息内容
-  optional string create_time = 5; // 消息创建时间
+  required int64 id = 1;              // Message ID.
+  required int64 to_user_id = 2;      // ID of the message recipient.
+  required int64 from_user_id = 3;    // ID of the message sender.
+  required string content = 4;        // Message content.
+  optional string create_time = 5;    // Message creation time.
 }
 ```
 
-**/douyin/message/action/ - 消息操作**
+**/douyin/message/action/ - Message Actions**
 
-登录用户对消息的相关操作，目前只支持消息发送
+Actions related to messages for a logged-in user. Currently, only message sending is supported.
 
-**接口类型:** POST
+**Endpoint:** POST
 
-**接口说明**
+**Interface Definition**
 ```
 syntax = "proto2";
 package douyin.extra.second;
 
 message douyin_relation_action_request {
-  required string token = 1; // 用户鉴权token
-  required int64 to_user_id = 2; // 对方用户id
-  required int32 action_type = 3; // 1-发送消息
-  required string content = 4; // 消息内容
+  required string token = 1;          // User authentication token.
+  required int64 to_user_id = 2;      // ID of the other user.
+  required int32 action_type = 3;     // 1 - Send message.
+  required string content = 4;        // Message content.
 }
 
 message douyin_relation_action_response {
-  required int32 status_code = 1; // 状态码，0-成功，其他值-失败
-  optional string status_msg = 2; // 返回状态描述
+  required int32 status_code = 1;     // Status code, 0 for success, other values for failure.
+  optional string status_msg = 2;     // Status description.
 }
 ```
