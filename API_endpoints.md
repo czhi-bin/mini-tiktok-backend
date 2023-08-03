@@ -1,7 +1,9 @@
 # **API Documentation**
-## Basic Interfaces
+### Basic Interfaces
 
 These are the fundamental features of Douyin (Chinese version of TikTok) implemented in the backend. It supports all users to browse Douyin videos, allows users to register accounts, publish their own videos, and lets others view these published videos.
+
+--- 
 
 **/douyin/feed/ - Video Feed Interface**
 
@@ -55,6 +57,8 @@ message User {
 }
 ```
 
+--- 
+
 **/douyin/user/register/ - User Registration Interface**
 
 This interface is used for new user registration. Users provide a username, password, and nickname. The username must be unique. After successful registration, the user ID and authentication token are returned.
@@ -79,6 +83,8 @@ message douyin_user_register_response {
 }
 ```
 
+--- 
+
 **/douyin/user/login/ - User Login Interface**
 
 This interface is used for user login using a username and password. After successful login, the user ID and authentication token are returned.
@@ -102,6 +108,8 @@ message douyin_user_login_response {
   required string token = 4;          // User authentication token.
 }
 ```
+
+---
 
 **/douyin/user/ - User Information Interface**
 
@@ -140,6 +148,8 @@ message User {
 }
 ```
 
+--- 
+
 **/douyin/publish/action/ -  Video Publishing Interface**
 
 This interface allows a logged-in user to upload a video.
@@ -162,6 +172,8 @@ message douyin_publish_action_response {
   optional string status_msg = 2;   // Status description.
 }
 ```
+
+---
 
 **/douyin/publish/list/ - Published Video List Interface**
 
@@ -210,11 +222,14 @@ message User {
   optional int64 favorite_count = 11;       // Number of likes given.
 }
 ```
+
 ---
 
-## Interaction Interfaces
+### Interaction Interfaces
 
 These interfaces enable user interactions, such as liking videos and commenting on them. Users can view comment lists, but only logged-in users can post comments.
+
+---
 
 **/douyin/favorite/action/ - Like Action Interface**
 
@@ -238,6 +253,8 @@ message douyin_favorite_action_response {
   optional string status_msg = 2;     // Status description.
 }
 ```
+
+---
 
 **/douyin/favorite/list/ - Liked Video List Interface**
 
@@ -287,6 +304,8 @@ message User {
 }
 ```
 
+---
+
 **/douyin/comment/action/ - Comment Action Interface**
 
 This interface allows a logged-in user to post or delete comments on a video.
@@ -320,6 +339,8 @@ message Comment {
   required string create_date = 4;    // Comment creation date in the format mm-dd.
 }
 ```
+
+---
 
 **/douyin/comment/list/ - Video Comment List Interface**
 
@@ -368,9 +389,11 @@ message User {
 
 --- 
 
-## Relation Interfaces
+### Relation Interfaces
 
 These interfaces handle user relationships, allowing users to follow and unfollow each other. Logged-in users can see their own following and follower lists.
+
+--- 
 
 **/douyin/relation/action/ - Relationship Action Interface**
 
@@ -394,6 +417,8 @@ message douyin_relation_action_response {
   optional string status_msg = 2; // Status description.
 }
 ```
+
+---
 
 **/douyin/relatioin/follow/list/ - User Following List Interface**
 
@@ -432,6 +457,8 @@ message User {
 }
 ```
 
+---
+
 **/douyin/relation/follower/list/ - User Follower List Interface**
 
 This interface provides a list of users who follow a logged-in user.
@@ -468,6 +495,8 @@ message User {
   optional int64 favorite_count = 11;       // Number of likes given.
 }
 ```
+
+---
 
 **/douyin/relation/friend/list/ - User Friend List Interface**
 
@@ -515,9 +544,11 @@ message FriendUser extends User {
 
 --- 
 
-## Messaging Interfaces
+### Messaging Interfaces
 
 The client queries message records from the server through periodic polling.
+
+---
 
 **/douyin/message/chat/ - Chat Records**
 
@@ -550,6 +581,8 @@ message Message {
   optional string create_time = 5;    // Message creation time.
 }
 ```
+
+---
 
 **/douyin/message/action/ - Message Actions**
 
