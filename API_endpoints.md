@@ -20,7 +20,7 @@ message douyin_feed_request {
   optional int64 latest_time = 1;     // Optional parameter to limit the latest submission 
                                       // time of returned videos, accurate to seconds. 
                                       // Not filling it means the current time.
-  optional string token = 2；         // Optional parameter for logged-in users.
+  optional string token = 2;         // Optional parameter for logged-in users.
 }
 
 message douyin_feed_response {
