@@ -13,7 +13,7 @@ message MessageChatRequest {
 }
 
 message MessageChatResponse {
-    int32 status_code = 1[(api.go_tag)='json:status_code:']; // 0 - success, others - failure
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
     string status_msg = 2; // Status description
     repeated Message message_list = 3; // List of messages
 }
@@ -34,7 +34,7 @@ message MessageActionRequest {
 }
 
 message MessageActionResponse {
-    int32 status_code = 1[(api.go_tag)='json:status_code:']; // 0 - success, others - failure
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
     string status_msg = 2; // Status description
 }
 
