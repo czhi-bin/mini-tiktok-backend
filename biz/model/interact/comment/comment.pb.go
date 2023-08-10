@@ -7,8 +7,8 @@
 package comment
 
 import (
-	_ "/api"
-	common "/common"
+	_ "github.com/czhi-bin/mini-tiktok-backend/biz/model/api"
+	common "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

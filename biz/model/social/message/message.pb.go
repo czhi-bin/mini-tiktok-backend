@@ -7,7 +7,7 @@
 package message
 
 import (
-	_ "/api"
+	_ "github.com/czhi-bin/mini-tiktok-backend/biz/model/api"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
