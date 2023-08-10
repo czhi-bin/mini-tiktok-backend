@@ -36,7 +36,7 @@ service PublishHandler {
     }
 
     rpc PublishList(PublishListRequest) returns (PublishListResponse) {
-        option (api.post) = "/douyin/publish/list/";
+        option (api.get) = "/douyin/publish/list/";
         // Get logged-in user's published video list, and directly list all the videos that the user has contributed.
     }
 }
