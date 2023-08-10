@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package relation;
+
+import "api.proto";
+import "common.proto";
+
+option go_package = "social/relation";
+
+message RelationActionRequest {
+    string token = 1; // User authentication token
+    int64 to_user_id = 2; // Target user ID
+    int32 action_type = 3; // 1 - Follow, 2 - Unfollow
+}
+
+message RelationActionResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+}
+
+message RelationFollowListRequest {
+    int64 user_id = 1; // User ID
+    string token = 2; // User authentication token
+}
+
+message RelationFollowListResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated User user_list = 3; // List of user information
+}
+
+message RelationFollowerListRequest {
+    int64 user_id = 1; // User ID
+    string token = 2; // User authentication token
+}
+
+message RelationFollowerListResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated User user_list = 3; // List of user information
+}
+
+message RelationFriendListRequest {
+    int64 user_id = 1; // User ID
+    string token = 2; // User authentication token
+}
+
+message RelationFriendListResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated FriendUser user_list = 3; // List of user information
+}
+
+message FriendUser {
+    message User {
+        User user = 1;
+    }
+    string message = 2; // latest chat messages with this friend
+    int64 msg_type = 3; // 0 - Messages current requested by the user, 1 - Messages sent by the current requesting user
+}
+
+service RelationHandler {
+    rpc RelationAction(RelationActionRequest) returns (RelationActionResponse) {
+        option (api.post) = "/douyin/relation/action/";
+        // Logged-in users follow or unfollow other users
+    }
+
+    rpc RelationFollowList(RelationFollowListRequest) returns (RelationFollowListResponse) {
+        option (api.get) = "/douyin/relation/follow/list/";
+        // Get a list of all users followed by the logged-in user
+    }
+
+    rpc RelationFollowerList(RelationFollowerListRequest) returns (RelationFollowerListResponse) {
+        option (api.get) = "/douyin/relation/follower/list/";
+        // Get a list of all fans following the logged-in user
+    }
+
+    rpc RelationFriendList(RelationFriendListRequest) returns (RelationFriendListResponse) {
+        option (api.get) = "/douyin/relation/friend/list/";
+        // Get a list of all friends following the logged-in user 
+        // (friends refers to follow each other)
+    }
+}

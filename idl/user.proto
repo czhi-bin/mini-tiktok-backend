@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package user;
+
+import "api.proto";
+import "common.proto";
+
+option go_package = "basic/user";
+
+message UserRegisterRequest {
+    string username = 1; // Registration username, maximum length of 32 characters
+    string password = 2; // Password, maximum length of 32 characters
+}
+
+message UserRegisterResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    int64 user_id = 3; // User ID
+    string token = 4; // User authentication token
+}
+
+message UserLoginRequest {
+    string username = 1; // Login username
+    string password = 2; // Login password
+}
+
+message UserLoginResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    int64 user_id = 3; // User ID
+    string token = 4; // User authentication token
+}
+
+message UserRequest {
+    int64 user_id = 1; // User ID
+    string token = 2; // User authentication token
+}
+
+message UserResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    User user = 3; // User information
+}
+
+service UserHandler {
+    rpc User(UserRequest) returns (UserResponse) {
+        option (api.get) = "/douyin/user/";
+    }
+
+    rpc UserRegister(UserRegisterRequest) returns (UserRegisterResponse) {
+        option (api.post) = "/douyin/user/register/";
+        // When a new user registers, just provide a user name, password, and nickname, and the username needs to be unique.
+        // After successful creation, return the user id and permission token
+    }
+
+    rpc UserLogin(UserLoginRequest) returns (UserLoginResponse) {
+        option (api.post) = "/douyin/user/login/";
+        // Login with username and passowrd, and return user id and permission token after successful login.
+    }
+}

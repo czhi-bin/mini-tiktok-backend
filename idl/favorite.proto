@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package favorite;
+
+import "api.proto";
+import "common.proto";
+
+option go_package = "interact/favorite";
+
+message FavoriteActionRequest {
+    string token = 1; // User authentication token
+    int64 video_id = 2; // Video ID
+    int32 action_type = 3; // 1 - Like, 2 - Unlike
+}
+
+message FavoriteActionResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+}
+
+message FavoriteListRequest {
+    int64 user_id = 1; // User ID
+    string token = 2; // User authentication token
+}
+
+message FavoriteListResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated Video video_list = 3; // List of videos liked by the user
+}
+
+service FavoriteHandler {
+    rpc FavoriteAction(FavoriteActionRequest) returns (FavoriteActionResponse) {
+        option (api.post) = "/douyin/favorite/action/";
+        // Like and unlike operations of the logged-in user on the video
+    }
+
+    rpc FavoriteList(FavoriteListRequest) returns (FavoriteListResponse) {
+        option (api.get) = "/douyin/favorite/list/";
+        // Get all liked videos of the logged in user
+    }
+}

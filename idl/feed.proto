@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package feed;
+
+import "api.proto";
+import "common.proto";
+
+option go_package = "basic/feed";
+
+message FeedRequest {
+    int64 latest_time = 1; // Optional parameter to limit the latest submisison time of returned videos, accurate to seconds. 
+                           //Not filling it means the current time.
+    string token = 2; // Optional parameter for logged-in users.
+}
+
+message FeedResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated Video video_list = 3; // List of videos.
+    int64 next_time = 4; //The earliest submission time among the videos return this time, used as 'latest_time' for the next requests.
+}
+
+service FeedHandler {
+    rpc Feed(FeedRequest) returns (FeedResponse) {
+        option (api.get) = "/douyin/feed/";
+        // The login status is not limited, and a list of videos in reverse order of submission time is returned.
+        // The number of videos is controlled by the server, with a maximum of 30 videos.
+    }
+}

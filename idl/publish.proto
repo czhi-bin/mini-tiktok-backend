@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package publish;
+
+import "api.proto";
+import "common.proto";
+
+option go_package = "basic/publish";
+
+message PublishActionRequest {
+    string token = 1; // User authentication token
+    bytes data = 2; // Video data
+    string title = 3; // Video title
+}
+
+message PublishActionResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+}
+
+message PublishListRequest {
+    int64 user_id = 1; // User ID
+    string token = 2; // User authentication token
+}
+
+message PublishListResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated Video video_list = 3; // List of videos published by the user
+}
+
+service PublishHandler {
+    rpc PublishAction(PublishActionRequest) returns (PublishActionResponse) {
+        option (api.post) = "/douyin/publish/action/";
+        // Logged in user selects video to upload.
+    }
+
+    rpc PublishList(PublishListRequest) returns (PublishListResponse) {
+        option (api.post) = "/douyin/publish/list/";
+        // Get logged-in user's published video list, and directly list all the videos that the user has contributed.
+    }
+}
