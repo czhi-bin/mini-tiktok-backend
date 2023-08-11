@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: mini-tiktok-db
+    environment:
+      - MYSQL_DATABASE=mini_tiktok
+      - MYSQL_USER=mini-tiktok
+      - MYSQL_PASSWORD=mini-tiktok123
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+    restart: always
+
+  mini-tiktok:
+    image: mini-tiktok:latest
+    container_name: mini-tiktok
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - "18000:18000"
