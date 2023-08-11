@@ -1,5 +1,3 @@
-github.com/czhi-bin/mini-tiktok-backend v0.0.0-20230810145429-c096c0d9d84c h1:7STMRwgqnlrElZbnIJvEkDdTiVSpC3XX9rcfAB3PCa0=
-github.com/czhi-bin/mini-tiktok-backend v0.0.0-20230810145429-c096c0d9d84c/go.mod h1:jHg1DMhm8kLVLZRJMYpiCeFra8RUnNtbzkgQ/Zy/28U=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

@@ -1,9 +1,8 @@
-module mini-tiktok
+module github.com/czhi-bin/mini-tiktok-backend
 
 go 1.20
 
 require (
-	github.com/czhi-bin/mini-tiktok-backend v0.0.0-20230810145429-c096c0d9d84c
 	google.golang.org/protobuf v1.31.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.3
