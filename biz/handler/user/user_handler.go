@@ -7,7 +7,7 @@ import (
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 
 	model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
-	service "github.com/czhi-bin/mini-tiktok-backend/biz/service/user"
+	service "github.com/czhi-bin/mini-tiktok-backend/biz/service"
 )
 
 // @router /douyin/user/ [GET]

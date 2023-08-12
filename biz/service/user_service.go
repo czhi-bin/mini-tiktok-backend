@@ -31,12 +31,12 @@ func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, e
 	}
 
 	if *user != (db.User{}) {
-		return -1, errors.New("User already exists")
+		return -1, errors.New("user already exists")
 	}
 
 	hashedPassword, err := utils.Encrypt(req.Password)
 	if err != nil {
-		return -1, errors.New("Failed to encrypt password")
+		return -1, errors.New("failed to encrypt password")
 	}
 	user_id, err = db.CreateUser(&db.User{
 		UserName: 			req.Username,
@@ -46,7 +46,7 @@ func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, e
 		Signature: 			"default_signature",
 	})
 	if err != nil {
-		return -1, errors.New("Failed to create user")
+		return -1, errors.New("failed to create user")
 	}
 
 	return user_id, nil
