@@ -3,7 +3,6 @@ syntax = "proto3";
 package message;
 
 import "api.proto";
-import "common.proto";
 
 option go_package = "social/message";
 
@@ -14,8 +13,9 @@ message MessageChatRequest {
 }
 
 message MessageChatResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
-    repeated Message message_list = 2; // List of messages
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated Message message_list = 3; // List of messages
 }
 
 message Message {
@@ -34,7 +34,8 @@ message MessageActionRequest {
 }
 
 message MessageActionResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
 }
 
 service MessageHandler {

@@ -16,6 +16,11 @@ type UserService struct {
 	c *gin.Context
 }
 
+type UserAuth struct {
+	UserId 	int64
+	Token 	string
+}
+
 // Creates a new user service
 func NewService(c *gin.Context) *UserService {
 	return &UserService{
@@ -52,7 +57,7 @@ func (s *UserService) Register(req *userModel.UserRegisterRequest) (user_id int6
 	return user_id, nil
 }
 
-func (s *UserService) Login(req *userModel.UserLoginRequest) (*commonModel.UserAuth, error) {
+func (s *UserService) Login(req *userModel.UserLoginRequest) (*UserAuth, error) {
 	user, err := db.QueryUser(req.Username)
 	if err != nil {
 		return nil, err
@@ -71,7 +76,7 @@ func (s *UserService) Login(req *userModel.UserLoginRequest) (*commonModel.UserA
 		return nil, errors.New("failed to generate token")
 	}
 
-	return &commonModel.UserAuth{
+	return &UserAuth{
 		UserId: user.ID,
 		Token:  token,
 	}, nil

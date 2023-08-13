@@ -16,8 +16,9 @@ message CommentActionRequest {
 }
 
 message CommentActionResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
-    Comment comment = 2; //Comment content returned for successful comment posting, no need to fetch the entire list again
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    Comment comment = 3; //Comment content returned for successful comment posting, no need to fetch the entire list again
 }
 
 message Comment {
@@ -33,8 +34,9 @@ message CommentListRequest {
 }
 
 message CommentListResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
-    repeated Comment comment_list = 2; // Comment list
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated Comment comment_list = 3; // Comment list
 }
 
 service CommentHandler {

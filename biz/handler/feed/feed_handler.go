@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	feedModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/feed"
-	commonModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
 	feedService "github.com/czhi-bin/mini-tiktok-backend/biz/service/feed"
 )
 
@@ -17,10 +16,8 @@ func Feed(c *gin.Context) {
 	err = c.BindQuery(&req)
 	if err != nil {
 		c.JSON(http.StatusOK, feedModel.FeedResponse{
-			CommonResponse: &commonModel.CommonResponse{
-				StatusCode: -1,
-				StatusMsg:  "Invalid parameters",
-			},
+			StatusCode: -1,
+			StatusMsg:  "Invalid parameters",
 		})
 		return
 	}
@@ -28,19 +25,15 @@ func Feed(c *gin.Context) {
 	feed, err := feedService.NewService(c).Feed(&req)
 	if err != nil {
 		c.JSON(http.StatusOK, feedModel.FeedResponse{
-			CommonResponse: &commonModel.CommonResponse{
-				StatusCode: -1,
-				StatusMsg:  err.Error(),
-			},
+			StatusCode: -1,
+			StatusMsg:  err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, feedModel.FeedResponse{
-		CommonResponse: &commonModel.CommonResponse{
-			StatusCode: 0,
-			StatusMsg:  "Feed retrieved successfully",
-		},
+		StatusCode: 0,
+		StatusMsg:  "Feed retrieved successfully",
 		VideoList: feed.VideoList,
 		NextTime:  feed.NextTime,
 	})

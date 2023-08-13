@@ -1,15 +1,15 @@
 package jwt
 
 import (
-	"net/http"
+	// "net/http"
 	"strconv"
 	"time"
 
-	"github.com/gin-gonic/gin"
+	// "github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 
-	"github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
-	model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
+	// "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
+	// model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
 )
 
 func GenerateToken(UserId int64) (string, error) {
@@ -45,47 +45,47 @@ func ParseToken(tokenString string) (jwt.MapClaims, error) {
 	return nil, jwt.ErrTokenUnverifiable
 }
 
-func JWTMiddleWare() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		var req model.UserLoginRequest
-		err := c.BindQuery(&req)
-		tokenString := c.GetHeader("Authorization")
-		if tokenString == "" {
-			c.JSON(http.StatusOK, common.CommonResponse{
-				StatusCode: -1,
-				StatusMsg: "Unauthorized (No token))",
-			})
-			c.Abort()
-			return
-		}
+// func JWTMiddleWare() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		var req model.UserLoginRequest
+// 		err := c.BindQuery(&req)
+// 		tokenString := c.GetHeader("Authorization")
+// 		if tokenString == "" {
+// 			c.JSON(http.StatusOK, common.CommonResponse{
+// 				StatusCode: -1,
+// 				StatusMsg: "Unauthorized (No token))",
+// 			})
+// 			c.Abort()
+// 			return
+// 		}
 
-		claims, err := ParseToken(tokenString)
-		if err != nil {
-			c.JSON(http.StatusOK, common.CommonResponse{
-				StatusCode: -1,
-				StatusMsg: "Invalid token (Invalid signature))",
-			})
-			c.Abort()
-			return
-		}
+// 		claims, err := ParseToken(tokenString)
+// 		if err != nil {
+// 			c.JSON(http.StatusOK, common.CommonResponse{
+// 				StatusCode: -1,
+// 				StatusMsg: "Invalid token (Invalid signature))",
+// 			})
+// 			c.Abort()
+// 			return
+// 		}
 
-		_, err = strconv.ParseInt(claims["aud"].(string), 10, 64)
-		if err != nil {
-			c.JSON(http.StatusOK, common.CommonResponse{
-				StatusCode: -1,
-				StatusMsg: "Invalid token (Invalid user id)",
-			})
-			c.Abort()
-			return
-		}
+// 		_, err = strconv.ParseInt(claims["aud"].(string), 10, 64)
+// 		if err != nil {
+// 			c.JSON(http.StatusOK, common.CommonResponse{
+// 				StatusCode: -1,
+// 				StatusMsg: "Invalid token (Invalid user id)",
+// 			})
+// 			c.Abort()
+// 			return
+// 		}
 
-		// if UserId != c. {
-		// 	c.JSON(http.StatusOK, common.CommonResponse{
-		// 		StatusCode: -1,
-		// 		StatusMsg: "Invalid token (Invalid user id)",
-		// 	})
-		// 	c.Abort()
-		// }
-		c.Next()
-	}
-}
+// 		// if UserId != c. {
+// 		// 	c.JSON(http.StatusOK, common.CommonResponse{
+// 		// 		StatusCode: -1,
+// 		// 		StatusMsg: "Invalid token (Invalid user id)",
+// 		// 	})
+// 		// 	c.Abort()
+// 		// }
+// 		c.Next()
+// 	}
+// }

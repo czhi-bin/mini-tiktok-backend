@@ -2,12 +2,12 @@ package user
 
 import (
 	"net/http"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 
 	"github.com/czhi-bin/mini-tiktok-backend/biz/middleware/jwt"
 	userModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
-	commonModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
 	userService "github.com/czhi-bin/mini-tiktok-backend/biz/service/user"
 )
 
@@ -17,7 +17,7 @@ func Register(c *gin.Context) {
 	var req userModel.UserRegisterRequest
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, commonModel.CommonResponse{
+		c.JSON(http.StatusOK, userModel.UserRegisterResponse{
 			StatusCode: -1,
 			StatusMsg:  "Invalid parameters",
 		})
@@ -26,7 +26,7 @@ func Register(c *gin.Context) {
 
 	userId, err := userService.NewService(c).Register(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, commonModel.CommonResponse{
+		c.JSON(http.StatusOK, userModel.UserRegisterResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
@@ -35,7 +35,7 @@ func Register(c *gin.Context) {
 
 	token, err := jwt.GenerateToken(userId)
 	if err != nil {
-		c.JSON(http.StatusOK, commonModel.CommonResponse{
+		c.JSON(http.StatusOK, userModel.UserRegisterResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
@@ -43,45 +43,55 @@ func Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, userModel.UserRegisterResponse{
-		CommonResponse: &commonModel.CommonResponse{
-			StatusCode: 0,
-			StatusMsg:  "Successfully registered",
-		},
-		UserAuth: &commonModel.UserAuth{
-			UserId: userId,
-			Token:  token,
-		},
+		StatusCode: 0,
+		StatusMsg:  "Successfully registered",
+		UserId: userId,
+		Token:  token,
 	})
 }
 
 // @router /douyin/user/login/ [POST]
 func Login(c *gin.Context) {
+	fmt.Println("in login handler")
 	var err error
 	var req userModel.UserLoginRequest
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, commonModel.CommonResponse{
+		c.JSON(http.StatusOK, userModel.UserLoginResponse{
 			StatusCode: -1,
 			StatusMsg:  "Invalid parameters",
 		})
 		return
 	}
 
+	fmt.Println("afer binding query")
+	fmt.Println("req: ", req)
+	fmt.Println("username: ", req.Username)
+	fmt.Println("password: ", req.Password)
 	userAuth, err := userService.NewService(c).Login(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, commonModel.CommonResponse{
+		c.JSON(http.StatusOK, userModel.UserLoginResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
 		return
 	}
 
+	fmt.Println("after login service")
+	fmt.Println("userAuth: ", userAuth)
+	fmt.Println("userId: ", userAuth.UserId)
+	fmt.Println("token: ", userAuth.Token)
+	// c.JSON(http.StatusOK, userModel.UserLoginResponse{
+	// 	
+	// 		StatusCode: 0,
+	// 	},
+	// 	UserAuth: userAuth,
+	// })
 	c.JSON(http.StatusOK, userModel.UserLoginResponse{
-		CommonResponse: &commonModel.CommonResponse{
-			StatusCode: 0,
-			StatusMsg:  "Successfully logged in",
-		},
-		UserAuth: userAuth,
+		StatusCode: 0,
+		StatusMsg:  "Successfully logged in",
+		UserId: userAuth.UserId,
+		Token:  userAuth.Token,
 	})
 }
 
@@ -91,7 +101,7 @@ func User(c *gin.Context) {
 	var req userModel.UserRequest
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, commonModel.CommonResponse{
+		c.JSON(http.StatusOK, userModel.UserResponse{
 			StatusCode: -1,
 			StatusMsg:  "Invalid parameters",
 		})
@@ -100,7 +110,7 @@ func User(c *gin.Context) {
 
 	user, err := userService.NewService(c).GetUserInfo(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, commonModel.CommonResponse{
+		c.JSON(http.StatusOK, userModel.UserResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
@@ -108,10 +118,8 @@ func User(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, userModel.UserResponse{
-		CommonResponse: &commonModel.CommonResponse{
-			StatusCode: 0,
-			StatusMsg:  "User retrieved successfully",
-		},
+		StatusCode: 0,
+		StatusMsg:  "User retrieved successfully",
 		User: user,
 	})
 }

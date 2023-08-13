@@ -14,9 +14,10 @@ message FeedRequest {
 }
 
 message FeedResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
-    repeated Video video_list = 2; // List of videos.
-    int64 next_time = 3; //The earliest submission time among the videos return this time, used as 'latest_time' for the next requests.
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    repeated Video video_list = 3; // List of videos.
+    int64 next_time = 4; //The earliest submission time among the videos return this time, used as 'latest_time' for the next requests.
 }
 
 service FeedHandler {

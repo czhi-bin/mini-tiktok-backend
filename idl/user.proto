@@ -13,8 +13,10 @@ message UserRegisterRequest {
 }
 
 message UserRegisterResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
-    UserAuth user_auth = 2; // Includes user ID and user authentication token
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    int64 user_id = 3; // User ID
+    string token = 4; // User authentication token
 }
 
 message UserLoginRequest {
@@ -23,17 +25,21 @@ message UserLoginRequest {
 }
 
 message UserLoginResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
-    UserAuth user_auth = 2; // Includes user ID and user authentication token
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    int64 user_id = 3; // User ID
+    string token = 4; // User authentication token
 }
 
 message UserRequest {
-    UserAuth user_auth = 1; // Includes user ID and user authentication token
+    int64 user_id = 1; // User ID
+    string token = 2; // User authentication token
 }
 
 message UserResponse {
-    CommonResponse common_response = 1; // Includes status code and status description
-    User user = 2; // User information
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+    string status_msg = 2; // Status description
+    User user = 3; // User information
 }
 
 service UserHandler {
