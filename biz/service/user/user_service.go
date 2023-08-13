@@ -13,11 +13,11 @@ import (
 )
 
 type UserService struct {
-	c 	*gin.Context
+	c *gin.Context
 }
 
 // Creates a new user service
-func NewUserService(c *gin.Context) *UserService {
+func NewService(c *gin.Context) *UserService {
 	return &UserService{
 		c: c,
 	}
@@ -39,11 +39,11 @@ func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, e
 	}
 
 	user_id, err = db.CreateUser(&db.User{
-		UserName: 			req.Username,
-		Password: 			hashedPassword,
-		Avatar: 			"default_avatar.jpg",
-		BackgroundImage: 	"default_background.jpg",
-		Signature: 			"default_signature",
+		UserName:        req.Username,
+		Password:        hashedPassword,
+		Avatar:          "default_avatar.jpg",
+		BackgroundImage: "default_background.jpg",
+		Signature:       "default_signature",
 	})
 	if err != nil {
 		return -1, errors.New("failed to create user")
@@ -52,7 +52,7 @@ func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, e
 	return user_id, nil
 }
 
-func (s *UserService) Login(req *model.UserLoginRequest) (UserAuth *common.UserAuth, err error) {
+func (s *UserService) Login(req *model.UserLoginRequest) (*common.UserAuth, error) {
 	user, err := db.QueryUser(req.Username)
 	if err != nil {
 		return nil, err
@@ -72,7 +72,7 @@ func (s *UserService) Login(req *model.UserLoginRequest) (UserAuth *common.UserA
 	}
 
 	return &common.UserAuth{
-		UserId: 	user.ID,
-		Token: 		token,
+		UserId: user.ID,
+		Token:  token,
 	}, nil
 }

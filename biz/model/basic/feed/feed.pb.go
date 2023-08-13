@@ -27,9 +27,9 @@ type FeedRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	LatestTime int64 `protobuf:"varint,1,opt,name=latest_time,json=latestTime,proto3" json:"latest_time,omitempty"` // Optional parameter to limit the latest submisison time of returned videos, accurate to seconds.
+	LatestTime int64 `protobuf:"varint,1,opt,name=latest_time,json=latestTime,proto3" json:"latest_time,omitempty" form:"latest_time"` // Optional parameter to limit the latest submisison time of returned videos, accurate to seconds.
 	// Not filling it means the current time.
-	Token string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"` // Optional parameter for logged-in users.
+	Token string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty" form:"token"` // Optional parameter for logged-in users.
 }
 
 func (x *FeedRequest) Reset() {
