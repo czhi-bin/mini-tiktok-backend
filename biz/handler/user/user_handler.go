@@ -6,7 +6,9 @@ import (
 	
 	"github.com/gin-gonic/gin"
 	
+	"github.com/czhi-bin/mini-tiktok-backend/biz/middleware/jwt"
 	model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
+	"github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
 	service "github.com/czhi-bin/mini-tiktok-backend/biz/service"
 )
 
@@ -17,30 +19,45 @@ func Register(c *gin.Context) {
 	err = c.BindQuery(&req)
 	if err != nil {
 		fmt.Println("err", err)
-		c.JSON(http.StatusOK, model.UserRegisterResponse{
+		c.JSON(http.StatusOK, common.CommonResponse{
 			StatusCode: -1,
 			StatusMsg: "Invalid parameters",
 		})
 		return
 	}
 
-	var user_id int64
-	user_id, err = service.NewUserService(c).GinRegister(&req)
+	var userId int64
+	userId, err = service.NewUserService(c).Register(&req)
 	if err != nil {
 		fmt.Println("err", err)
-		c.JSON(http.StatusOK, model.UserRegisterResponse{
+		c.JSON(http.StatusOK, common.CommonResponse{
 			StatusCode: -1,
 			StatusMsg: err.Error(),
 		})
 		return
 	}
 
-	// TODO: replace with proper response
+	var token string
+	token, err = jwt.GenerateToken(userId)
+	if err != nil {
+		fmt.Println("err", err)
+		c.JSON(http.StatusOK, common.CommonResponse{
+			StatusCode: -1,
+			StatusMsg: err.Error(),
+		})
+		return
+	}
+
+	fmt.Println("token IS ???", token)
 	c.JSON(http.StatusOK, model.UserRegisterResponse{
-		StatusCode: 0,
-		StatusMsg: 	"Successfully registered",
-		UserId: 	user_id, 		
-		Token: 		"token",		// replace with proper token
+		CommonResponse: &common.CommonResponse{
+			StatusCode: 0,
+			StatusMsg: 	"Successfully registered",
+		},
+		UserAuth: &common.UserAuth{
+			UserId: 	userId, 		
+			Token: 		token,
+		},
 	})
 }
 

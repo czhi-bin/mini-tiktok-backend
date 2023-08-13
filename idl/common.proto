@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "api.proto";
+
 option go_package = "/common";
 
 message User {
@@ -25,4 +27,14 @@ message Video {
   int64 comment_count = 6; // total number of comments on the video
   bool is_favorite = 7; // true-Liked，false-did not like
   string title = 8; // video title
+}
+
+message CommonResponse {
+  int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
+  string status_msg = 2; // Status description
+}
+
+message UserAuth {
+  int64 user_id = 1; // User ID
+  string token = 2; // User authentication token
 }

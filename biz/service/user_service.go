@@ -21,7 +21,7 @@ func NewUserService(c *gin.Context) *UserService {
 	}
 }
 
-func (s *UserService) GinRegister(req *model.UserRegisterRequest) (user_id int64, err error) {
+func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, err error) {
 	user, err := db.QueryUser(req.Username)
 	if err != nil {
 		return -1, err

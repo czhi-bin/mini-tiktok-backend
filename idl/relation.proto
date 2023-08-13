@@ -14,41 +14,34 @@ message RelationActionRequest {
 }
 
 message RelationActionResponse {
-    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
-    string status_msg = 2; // Status description
+    CommonResponse common_response = 1; // Includes status code and status description
 }
 
 message RelationFollowListRequest {
-    int64 user_id = 1; // User ID
-    string token = 2; // User authentication token
+    UserAuth user_auth = 1; // Includes user ID and user authentication token
 }
 
 message RelationFollowListResponse {
-    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
-    string status_msg = 2; // Status description
-    repeated User user_list = 3; // List of user information
+    CommonResponse common_response = 1; // Includes status code and status description
+    repeated User user_list = 2; // List of user information
 }
 
 message RelationFollowerListRequest {
-    int64 user_id = 1; // User ID
-    string token = 2; // User authentication token
+    UserAuth user_auth = 1; // Includes user ID and user authentication token
 }
 
 message RelationFollowerListResponse {
-    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
-    string status_msg = 2; // Status description
-    repeated User user_list = 3; // List of user information
+    CommonResponse common_response = 1; // Includes status code and status description
+    repeated User user_list = 2; // List of user information
 }
 
 message RelationFriendListRequest {
-    int64 user_id = 1; // User ID
-    string token = 2; // User authentication token
+    UserAuth user_auth = 1; // Includes user ID and user authentication token
 }
 
 message RelationFriendListResponse {
-    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // 0 - success, others - failure
-    string status_msg = 2; // Status description
-    repeated FriendUser user_list = 3; // List of user information
+    CommonResponse common_response = 1; // Includes status code and status description
+    repeated FriendUser user_list = 2; // List of user information
 }
 
 message FriendUser {
