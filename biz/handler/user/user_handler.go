@@ -7,7 +7,7 @@ import (
 
 	"github.com/czhi-bin/mini-tiktok-backend/biz/middleware/jwt"
 	userModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
-	"github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
+	commonModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
 	userService "github.com/czhi-bin/mini-tiktok-backend/biz/service/user"
 )
 
@@ -17,7 +17,7 @@ func Register(c *gin.Context) {
 	var req userModel.UserRegisterRequest
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, common.CommonResponse{
+		c.JSON(http.StatusOK, commonModel.CommonResponse{
 			StatusCode: -1,
 			StatusMsg:  "Invalid parameters",
 		})
@@ -26,7 +26,7 @@ func Register(c *gin.Context) {
 
 	userId, err := userService.NewService(c).Register(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, common.CommonResponse{
+		c.JSON(http.StatusOK, commonModel.CommonResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
@@ -35,7 +35,7 @@ func Register(c *gin.Context) {
 
 	token, err := jwt.GenerateToken(userId)
 	if err != nil {
-		c.JSON(http.StatusOK, common.CommonResponse{
+		c.JSON(http.StatusOK, commonModel.CommonResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
@@ -43,11 +43,11 @@ func Register(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, userModel.UserRegisterResponse{
-		CommonResponse: &common.CommonResponse{
+		CommonResponse: &commonModel.CommonResponse{
 			StatusCode: 0,
 			StatusMsg:  "Successfully registered",
 		},
-		UserAuth: &common.UserAuth{
+		UserAuth: &commonModel.UserAuth{
 			UserId: userId,
 			Token:  token,
 		},
@@ -60,7 +60,7 @@ func Login(c *gin.Context) {
 	var req userModel.UserLoginRequest
 	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, common.CommonResponse{
+		c.JSON(http.StatusOK, commonModel.CommonResponse{
 			StatusCode: -1,
 			StatusMsg:  "Invalid parameters",
 		})
@@ -69,7 +69,7 @@ func Login(c *gin.Context) {
 
 	userAuth, err := userService.NewService(c).Login(&req)
 	if err != nil {
-		c.JSON(http.StatusOK, common.CommonResponse{
+		c.JSON(http.StatusOK, commonModel.CommonResponse{
 			StatusCode: -1,
 			StatusMsg:  err.Error(),
 		})
@@ -77,7 +77,7 @@ func Login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, userModel.UserLoginResponse{
-		CommonResponse: &common.CommonResponse{
+		CommonResponse: &commonModel.CommonResponse{
 			StatusCode: 0,
 			StatusMsg:  "Successfully logged in",
 		},
@@ -86,6 +86,32 @@ func Login(c *gin.Context) {
 }
 
 // @router /douyin/user/ [GET]
-func GetUserInfo(c *gin.Context) {
+func User(c *gin.Context) {
+	var err error
+	var req userModel.UserRequest
+	err = c.BindQuery(&req)
+	if err != nil {
+		c.JSON(http.StatusOK, commonModel.CommonResponse{
+			StatusCode: -1,
+			StatusMsg:  "Invalid parameters",
+		})
+		return
+	}
 
+	user, err := userService.NewService(c).GetUserInfo(&req)
+	if err != nil {
+		c.JSON(http.StatusOK, commonModel.CommonResponse{
+			StatusCode: -1,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, userModel.UserResponse{
+		CommonResponse: &commonModel.CommonResponse{
+			StatusCode: 0,
+			StatusMsg:  "User retrieved successfully",
+		},
+		User: user,
+	})
 }

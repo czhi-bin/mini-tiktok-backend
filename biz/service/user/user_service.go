@@ -7,8 +7,8 @@ import (
 
 	"github.com/czhi-bin/mini-tiktok-backend/biz/dal/db"
 	"github.com/czhi-bin/mini-tiktok-backend/biz/middleware/jwt"
-	model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
-	"github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
+	userModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
+	commonModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
 	"github.com/czhi-bin/mini-tiktok-backend/pkg/utils"
 )
 
@@ -23,7 +23,7 @@ func NewService(c *gin.Context) *UserService {
 	}
 }
 
-func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, err error) {
+func (s *UserService) Register(req *userModel.UserRegisterRequest) (user_id int64, err error) {
 	user, err := db.QueryUser(req.Username)
 	if err != nil {
 		return -1, err
@@ -52,7 +52,7 @@ func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, e
 	return user_id, nil
 }
 
-func (s *UserService) Login(req *model.UserLoginRequest) (*common.UserAuth, error) {
+func (s *UserService) Login(req *userModel.UserLoginRequest) (*commonModel.UserAuth, error) {
 	user, err := db.QueryUser(req.Username)
 	if err != nil {
 		return nil, err
@@ -71,8 +71,12 @@ func (s *UserService) Login(req *model.UserLoginRequest) (*common.UserAuth, erro
 		return nil, errors.New("failed to generate token")
 	}
 
-	return &common.UserAuth{
+	return &commonModel.UserAuth{
 		UserId: user.ID,
 		Token:  token,
 	}, nil
+}
+
+func (s *UserService) GetUserInfo(req *userModel.UserRequest) (*commonModel.User, error) {
+	return nil, nil
 }

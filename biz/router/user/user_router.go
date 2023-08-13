@@ -9,8 +9,8 @@ import (
 // RegisterRoutes registers all routes of user module.
 func RegisterRoutes(r *gin.Engine) {
 	userGroup := r.Group("/douyin/user")
-	
-	userGroup.GET("/", userHandler.GetUserInfo)
+
+	userGroup.GET("/", userHandler.User)
 	userGroup.POST("/register/", userHandler.Register)
 	userGroup.POST("/login/", userHandler.Login)
 }

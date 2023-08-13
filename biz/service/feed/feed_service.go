@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/gin-gonic/gin"
 
-	model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/feed"
+	feedModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/feed"
 )
 
 type FeedService struct {
@@ -17,9 +17,9 @@ func NewService(c *gin.Context) *FeedService {
 	}
 }
 
-func (s *FeedService) Feed(req *model.FeedRequest) (*model.FeedResponse, error) {
+func (s *FeedService) Feed(req *feedModel.FeedRequest) (*feedModel.FeedResponse, error) {
 	// TODO: implement
-	return &model.FeedResponse{
+	return &feedModel.FeedResponse{
 		VideoList: nil,
 		NextTime:  -1,
 	}, nil
