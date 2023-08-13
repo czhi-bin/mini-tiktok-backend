@@ -1,10 +1,9 @@
 package service
 
 import (
-	"context"
 	"errors"
 
-	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/gin-gonic/gin"
 
 	"github.com/czhi-bin/mini-tiktok-backend/biz/dal/db"
 	model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
@@ -12,19 +11,17 @@ import (
 )
 
 type UserService struct {
-	ctx context.Context
-	c 	*app.RequestContext
+	c 	*gin.Context
 }
 
 // Creates a new user service
-func NewUserService(ctx context.Context, c *app.RequestContext) *UserService {
+func NewUserService(c *gin.Context) *UserService {
 	return &UserService{
-		ctx: ctx,
 		c: c,
 	}
 }
 
-func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, err error) {
+func (s *UserService) GinRegister(req *model.UserRegisterRequest) (user_id int64, err error) {
 	user, err := db.QueryUser(req.Username)
 	if err != nil {
 		return -1, err
@@ -41,8 +38,8 @@ func (s *UserService) Register(req *model.UserRegisterRequest) (user_id int64, e
 	user_id, err = db.CreateUser(&db.User{
 		UserName: 			req.Username,
 		Password: 			hashedPassword,
-		AvatarUrl: 			"default_avatar.jpg",
-		BackgroundImageUrl: "default_background.jpg",
+		Avatar: 			"default_avatar.jpg",
+		BackgroundImage: 	"default_background.jpg",
 		Signature: 			"default_signature",
 	})
 	if err != nil {

@@ -4,6 +4,8 @@ services:
   db:
     image: mysql:latest
     container_name: mini-tiktok-db
+    volumes:
+      - ./pkg/configs/sql:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_DATABASE=mini_tiktok
       - MYSQL_USER=mini-tiktok

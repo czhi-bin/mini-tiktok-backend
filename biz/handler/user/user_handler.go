@@ -1,27 +1,23 @@
 package user
 
 import (
-	"context"
-
-	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/protocol/consts"
-
+	"fmt"
+	"net/http"
+	
+	"github.com/gin-gonic/gin"
+	
 	model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
 	service "github.com/czhi-bin/mini-tiktok-backend/biz/service"
 )
 
-// @router /douyin/user/ [GET]
-func GetUserInfo(ctx context.Context, c *app.RequestContext) {
-	
-}
-
 // @router /douyin/user/register/ [POST]
-func Register(ctx context.Context, c *app.RequestContext) {
+func Register(c *gin.Context) {
 	var err error
 	var req model.UserRegisterRequest
-	err = c.BindAndValidate(&req)
+	err = c.BindQuery(&req)
 	if err != nil {
-		c.JSON(consts.StatusOK, model.UserRegisterResponse{
+		fmt.Println("err", err)
+		c.JSON(http.StatusOK, model.UserRegisterResponse{
 			StatusCode: -1,
 			StatusMsg: "Invalid parameters",
 		})
@@ -29,9 +25,10 @@ func Register(ctx context.Context, c *app.RequestContext) {
 	}
 
 	var user_id int64
-	user_id, err = service.NewUserService(ctx, c).Register(&req)
+	user_id, err = service.NewUserService(c).GinRegister(&req)
 	if err != nil {
-		c.JSON(consts.StatusOK, model.UserRegisterResponse{
+		fmt.Println("err", err)
+		c.JSON(http.StatusOK, model.UserRegisterResponse{
 			StatusCode: -1,
 			StatusMsg: err.Error(),
 		})
@@ -39,7 +36,7 @@ func Register(ctx context.Context, c *app.RequestContext) {
 	}
 
 	// TODO: replace with proper response
-	c.JSON(consts.StatusOK, model.UserRegisterResponse{
+	c.JSON(http.StatusOK, model.UserRegisterResponse{
 		StatusCode: 0,
 		StatusMsg: 	"Successfully registered",
 		UserId: 	user_id, 		
@@ -48,7 +45,11 @@ func Register(ctx context.Context, c *app.RequestContext) {
 }
 
 // @router /douyin/user/login/ [POST]
-func Login(ctx context.Context, c *app.RequestContext) {
+func Login(c *gin.Context) {
 
 }
 
+// @router /douyin/user/ [GET]
+func GetUserInfo(c *gin.Context) {
+	
+}

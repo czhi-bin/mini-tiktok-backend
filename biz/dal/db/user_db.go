@@ -8,8 +8,8 @@ type User struct {
 	ID	   				int64  `json:"id"`
 	UserName  			string `json:"user_name"`
 	Password  			string `json:"password"`
-	AvatarUrl 			string `json:"avatar"`
-	BackgroundImageUrl 	string `json:"background_image"`
+	Avatar	 			string `json:"avatar"`
+	BackgroundImage 	string `json:"background_image"`
 	Signature 			string `json:"signature"`
 }
 
