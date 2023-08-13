@@ -26,8 +26,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	var userId int64
-	userId, err = service.NewUserService(c).Register(&req)
+	userId, err := service.NewUserService(c).Register(&req)
 	if err != nil {
 		fmt.Println("err", err)
 		c.JSON(http.StatusOK, common.CommonResponse{
@@ -37,8 +36,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	var token string
-	token, err = jwt.GenerateToken(userId)
+	token, err := jwt.GenerateToken(userId)
 	if err != nil {
 		fmt.Println("err", err)
 		c.JSON(http.StatusOK, common.CommonResponse{
@@ -48,7 +46,6 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("token IS ???", token)
 	c.JSON(http.StatusOK, model.UserRegisterResponse{
 		CommonResponse: &common.CommonResponse{
 			StatusCode: 0,
@@ -63,7 +60,35 @@ func Register(c *gin.Context) {
 
 // @router /douyin/user/login/ [POST]
 func Login(c *gin.Context) {
+	var err error
+	var req model.UserLoginRequest
+	err = c.BindQuery(&req)
+	if err != nil {
+		fmt.Println("err", err)
+		c.JSON(http.StatusOK, common.CommonResponse{
+			StatusCode: -1,
+			StatusMsg: "Invalid parameters",
+		})
+		return
+	}
 
+	userAuth, err := service.NewUserService(c).Login(&req)
+	if err != nil {
+		fmt.Println("err", err)
+		c.JSON(http.StatusOK, common.CommonResponse{
+			StatusCode: -1,
+			StatusMsg: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, model.UserLoginResponse{
+		CommonResponse: &common.CommonResponse{
+			StatusCode: 0,
+			StatusMsg: 	"Successfully logged in",
+		},
+		UserAuth: userAuth,
+	})
 }
 
 // @router /douyin/user/ [GET]
