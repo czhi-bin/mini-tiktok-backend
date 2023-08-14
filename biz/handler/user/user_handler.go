@@ -2,7 +2,6 @@ package user
 
 import (
 	"net/http"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 
@@ -52,7 +51,6 @@ func Register(c *gin.Context) {
 
 // @router /douyin/user/login/ [POST]
 func Login(c *gin.Context) {
-	fmt.Println("in login handler")
 	var err error
 	var req userModel.UserLoginRequest
 	err = c.BindQuery(&req)
@@ -64,10 +62,6 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("afer binding query")
-	fmt.Println("req: ", req)
-	fmt.Println("username: ", req.Username)
-	fmt.Println("password: ", req.Password)
 	userAuth, err := userService.NewService(c).Login(&req)
 	if err != nil {
 		c.JSON(http.StatusOK, userModel.UserLoginResponse{
@@ -77,16 +71,6 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("after login service")
-	fmt.Println("userAuth: ", userAuth)
-	fmt.Println("userId: ", userAuth.UserId)
-	fmt.Println("token: ", userAuth.Token)
-	// c.JSON(http.StatusOK, userModel.UserLoginResponse{
-	// 	
-	// 		StatusCode: 0,
-	// 	},
-	// 	UserAuth: userAuth,
-	// })
 	c.JSON(http.StatusOK, userModel.UserLoginResponse{
 		StatusCode: 0,
 		StatusMsg:  "Successfully logged in",
