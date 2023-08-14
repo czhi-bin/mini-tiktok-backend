@@ -92,7 +92,7 @@ func User(c *gin.Context) {
 		return
 	}
 
-	user, err := userService.NewService(c).GetUserInfo(&req)
+	userInfo, err := userService.NewService(c).GetUserInfo(&req)
 	if err != nil {
 		c.JSON(http.StatusOK, userModel.UserResponse{
 			StatusCode: -1,
@@ -104,6 +104,6 @@ func User(c *gin.Context) {
 	c.JSON(http.StatusOK, userModel.UserResponse{
 		StatusCode: 0,
 		StatusMsg:  "User retrieved successfully",
-		User: user,
+		User: userInfo,
 	})
 }

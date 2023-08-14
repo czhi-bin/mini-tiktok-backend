@@ -9,5 +9,8 @@ const (
 )
 
 const (
-	UserTableName = "users"
+	UserTableName 		= "users"
+	VideoTableName 		= "videos"
+	FavoriteTableName 	= "likes"
+	RelationTableName 	= "follows"
 )

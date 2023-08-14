@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 
@@ -17,8 +18,8 @@ type UserService struct {
 }
 
 type UserAuth struct {
-	UserId 	int64
-	Token 	string
+	UserId int64
+	Token  string
 }
 
 // Creates a new user service
@@ -29,7 +30,7 @@ func NewService(c *gin.Context) *UserService {
 }
 
 func (s *UserService) Register(req *userModel.UserRegisterRequest) (user_id int64, err error) {
-	user, err := db.QueryUser(req.Username)
+	user, err := db.GetUserByName(req.Username)
 	if err != nil {
 		return -1, err
 	}
@@ -58,7 +59,7 @@ func (s *UserService) Register(req *userModel.UserRegisterRequest) (user_id int6
 }
 
 func (s *UserService) Login(req *userModel.UserLoginRequest) (*UserAuth, error) {
-	user, err := db.QueryUser(req.Username)
+	user, err := db.GetUserByName(req.Username)
 	if err != nil {
 		return nil, err
 	}
@@ -82,6 +83,103 @@ func (s *UserService) Login(req *userModel.UserLoginRequest) (*UserAuth, error) 
 	}, nil
 }
 
-func (s *UserService) GetUserInfo(req *userModel.UserRequest) (*commonModel.User, error) {
-	return nil, nil
+// GetUserInfo returns the user info of queryUserId according to the current user
+func (s *UserService) GetUserInfo(queryUserId, currentUserId int64) (*commonModel.User, error) {
+	userInfo := &commonModel.User{Id: queryUserId}
+	errChan := make(chan error, 7)
+	defer close(errChan)
+	var wg sync.WaitGroup
+	wg.Add(7)
+
+	go func() {
+		// check if the user exists
+		user, err := db.GetUserById(queryUserId)
+		if err != nil {
+			errChan <- err
+		} else {
+			userInfo.Name = user.UserName
+			userInfo.Avatar = user.Avatar
+			userInfo.BackgroundImage = user.BackgroundImage
+			userInfo.Signature = user.Signature
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		// get the number of video published by the user
+		workCount, err := db.GetWorkCount(queryUserId)
+		if err != nil {
+			errChan <- err
+		} else {
+			userInfo.WorkCount = workCount
+		}
+
+		wg.Done()
+	}()
+
+	go func() {
+		// get the number of following of the user
+		followingCount, err := db.GetFollowingCount(queryUserId)
+		if err != nil {
+			errChan <- err
+		} else {
+			userInfo.FollowCount = followingCount
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		// get the number of follower of the user
+		followerCount, err := db.GetFollowerCount(queryUserId)
+		if err != nil {
+			errChan <- err
+		} else {
+			userInfo.FollowerCount = followerCount
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		// check if the current user follows the user
+		// in this case, currentUser is the follower
+		isFollowing, err := db.IsFollowing(queryUserId, currentUserId)
+		if err != nil {
+			errChan <- err
+		} else {
+			userInfo.IsFollow = isFollowing
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		// get the number of videos liked by the user
+		favoriteCount, err := db.GetFavoriteCountByUserId(queryUserId)
+		if err != nil {
+			errChan <- err
+		} else {
+			userInfo.FavoriteCount = favoriteCount
+		}
+		wg.Done()
+	}()
+
+	go func() {
+		// get the number of likes for video published by the user
+		totalFavorited, err := db.GetTotalFavoritedByAuthorId(queryUserId)
+		if err != nil {
+			errChan <- err
+		} else {
+			userInfo.TotalFavorited = totalFavorited
+		}
+		wg.Done()
+	}()
+
+	wg.Wait()
+
+	select {
+	case err := <-errChan:
+		return nil, err
+	default:
+	}
+
+	return userInfo, nil
 }
