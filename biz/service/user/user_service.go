@@ -84,7 +84,10 @@ func (s *UserService) Login(req *userModel.UserLoginRequest) (*UserAuth, error) 
 }
 
 // GetUserInfo returns the user info of queryUserId according to the current user
-func (s *UserService) GetUserInfo(queryUserId, currentUserId int64) (*commonModel.User, error) {
+func (s *UserService) GetUserInfo(req *userModel.UserRequest) (*commonModel.User, error) {
+	queryUserId := req.UserId
+	var currentUserId int64 = 0
+
 	userInfo := &commonModel.User{Id: queryUserId}
 	errChan := make(chan error, 7)
 	defer close(errChan)
@@ -113,7 +116,6 @@ func (s *UserService) GetUserInfo(queryUserId, currentUserId int64) (*commonMode
 		} else {
 			userInfo.WorkCount = workCount
 		}
-
 		wg.Done()
 	}()
 
@@ -142,11 +144,16 @@ func (s *UserService) GetUserInfo(queryUserId, currentUserId int64) (*commonMode
 	go func() {
 		// check if the current user follows the user
 		// in this case, currentUser is the follower
-		isFollowing, err := db.IsFollowing(queryUserId, currentUserId)
-		if err != nil {
-			errChan <- err
+		if currentUserId != 0 {
+			// use for future use?...
+			isFollowing, err := db.IsFollowing(queryUserId, currentUserId)
+			if err != nil {
+				errChan <- err
+			} else {
+				userInfo.IsFollow = isFollowing
+			}
 		} else {
-			userInfo.IsFollow = isFollowing
+			userInfo.IsFollow = false
 		}
 		wg.Done()
 	}()

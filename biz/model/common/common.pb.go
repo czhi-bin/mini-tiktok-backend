@@ -26,17 +26,17 @@ type User struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id              int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                                 // user id
-	Name            string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`                                              // user name
-	FollowCount     int64  `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3" json:"follow_count,omitempty"`            // total number of people the user follows
-	FollowerCount   int64  `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3" json:"follower_count,omitempty"`      // total number of fans
-	IsFollow        bool   `protobuf:"varint,5,opt,name=is_follow,json=isFollow,proto3" json:"is_follow,omitempty"`                     // whether the currently logged-in user follows this user
-	Avatar          string `protobuf:"bytes,6,opt,name=avatar,proto3" json:"avatar,omitempty"`                                          // user avatar URL
-	BackgroundImage string `protobuf:"bytes,7,opt,name=background_image,json=backgroundImage,proto3" json:"background_image,omitempty"` // image at the top of the user's personal page
-	Signature       string `protobuf:"bytes,8,opt,name=signature,proto3" json:"signature,omitempty"`                                    // user profile
-	TotalFavorited  int64  `protobuf:"varint,9,opt,name=total_favorited,json=totalFavorited,proto3" json:"total_favorited,omitempty"`   // number of likes for videos published by user
-	WorkCount       int64  `protobuf:"varint,10,opt,name=work_count,json=workCount,proto3" json:"work_count,omitempty"`                 // number of videos published by user
-	FavoriteCount   int64  `protobuf:"varint,11,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count,omitempty"`     // number of likes by this user
+	Id              int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id"`                                                 // user id
+	Name            string `protobuf:"bytes,2,opt,name=name,proto3" json:"name"`                                              // user name
+	FollowCount     int64  `protobuf:"varint,3,opt,name=follow_count,json=followCount,proto3" json:"follow_count"`            // total number of people the user follows
+	FollowerCount   int64  `protobuf:"varint,4,opt,name=follower_count,json=followerCount,proto3" json:"follower_count"`      // total number of fans
+	IsFollow        bool   `protobuf:"varint,5,opt,name=is_follow,json=isFollow,proto3" json:"is_follow"`                     // whether the currently logged-in user follows this user
+	Avatar          string `protobuf:"bytes,6,opt,name=avatar,proto3" json:"avatar"`                                          // user avatar URL
+	BackgroundImage string `protobuf:"bytes,7,opt,name=background_image,json=backgroundImage,proto3" json:"background_image"` // image at the top of the user's personal page
+	Signature       string `protobuf:"bytes,8,opt,name=signature,proto3" json:"signature"`                                    // user profile
+	TotalFavorited  int64  `protobuf:"varint,9,opt,name=total_favorited,json=totalFavorited,proto3" json:"total_favorited"`   // number of likes for videos published by user
+	WorkCount       int64  `protobuf:"varint,10,opt,name=work_count,json=workCount,proto3" json:"work_count"`                 // number of videos published by user
+	FavoriteCount   int64  `protobuf:"varint,11,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count"`     // number of likes by this user
 }
 
 func (x *User) Reset() {
@@ -153,14 +153,14 @@ type Video struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                            // video id
-	Author        *User  `protobuf:"bytes,2,opt,name=author,proto3" json:"author,omitempty"`                                     // author information
-	PlayUrl       string `protobuf:"bytes,3,opt,name=play_url,json=playUrl,proto3" json:"play_url,omitempty"`                    // video playback URL
-	CoverUrl      string `protobuf:"bytes,4,opt,name=cover_url,json=coverUrl,proto3" json:"cover_url,omitempty"`                 // video cover URL
-	FavoriteCount int64  `protobuf:"varint,5,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count,omitempty"` // total number of likes for the video
-	CommentCount  int64  `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count,omitempty"`    // total number of comments on the video
-	IsFavorite    bool   `protobuf:"varint,7,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite,omitempty"`          // true-Liked，false-did not like
-	Title         string `protobuf:"bytes,8,opt,name=title,proto3" json:"title,omitempty"`                                       // video title
+	Id            int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id"`                                            // video id
+	Author        *User  `protobuf:"bytes,2,opt,name=author,proto3" json:"author"`                                     // author information
+	PlayUrl       string `protobuf:"bytes,3,opt,name=play_url,json=playUrl,proto3" json:"play_url"`                    // video playback URL
+	CoverUrl      string `protobuf:"bytes,4,opt,name=cover_url,json=coverUrl,proto3" json:"cover_url"`                 // video cover URL
+	FavoriteCount int64  `protobuf:"varint,5,opt,name=favorite_count,json=favoriteCount,proto3" json:"favorite_count"` // total number of likes for the video
+	CommentCount  int64  `protobuf:"varint,6,opt,name=comment_count,json=commentCount,proto3" json:"comment_count"`    // total number of comments on the video
+	IsFavorite    bool   `protobuf:"varint,7,opt,name=is_favorite,json=isFavorite,proto3" json:"is_favorite"`          // true-Liked，false-did not like
+	Title         string `protobuf:"bytes,8,opt,name=title,proto3" json:"title"`                                       // video title
 }
 
 func (x *Video) Reset() {

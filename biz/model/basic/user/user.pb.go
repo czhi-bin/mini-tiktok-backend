@@ -83,9 +83,9 @@ type UserRegisterResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	UserId     int64  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`             // User ID
-	Token      string `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`                              // User authentication token
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,"`     // Status description
+	UserId     int64  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id"`             // User ID
+	Token      string `protobuf:"bytes,4,opt,name=token,proto3" json:"token"`                              // User authentication token
 }
 
 func (x *UserRegisterResponse) Reset() {
@@ -209,9 +209,9 @@ type UserLoginResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	UserId     int64  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`             // User ID
-	Token      string `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`                              // User authentication token
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	UserId     int64  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id"`             // User ID
+	Token      string `protobuf:"bytes,4,opt,name=token,proto3" json:"token"`                              // User authentication token
 }
 
 func (x *UserLoginResponse) Reset() {
@@ -279,8 +279,8 @@ type UserRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // User ID
-	Token  string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`                  // User authentication token
+	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty" form:"user_id"` // User ID
+	Token  string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty" form:"token"`                  // User authentication token
 }
 
 func (x *UserRequest) Reset() {
@@ -335,8 +335,8 @@ type UserResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32        `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string       `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	User       *common.User `protobuf:"bytes,3,opt,name=user,proto3" json:"user,omitempty"`                                // User information
+	StatusMsg  string       `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	User       *common.User `protobuf:"bytes,3,opt,name=user,proto3" json:"user"`                                // User information
 }
 
 func (x *UserResponse) Reset() {

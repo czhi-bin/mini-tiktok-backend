@@ -90,8 +90,8 @@ type MessageChatResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode  int32      `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"`   // 0 - success, others - failure
-	StatusMsg   string     `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`       // Status description
-	MessageList []*Message `protobuf:"bytes,3,rep,name=message_list,json=messageList,proto3" json:"message_list,omitempty"` // List of messages
+	StatusMsg   string     `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`       // Status description
+	MessageList []*Message `protobuf:"bytes,3,rep,name=message_list,json=messageList,proto3" json:"message_list"` // List of messages
 }
 
 func (x *MessageChatResponse) Reset() {
@@ -152,11 +152,11 @@ type Message struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                     // Message ID
-	ToUserId   int64  `protobuf:"varint,2,opt,name=to_user_id,json=toUserId,proto3" json:"to_user_id,omitempty"`       // ID of the message recipient
-	FromUserId int64  `protobuf:"varint,3,opt,name=from_user_id,json=fromUserId,proto3" json:"from_user_id,omitempty"` // ID of the message sender
-	Content    string `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`                            // Message content
-	CreateTime int64  `protobuf:"varint,5,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`   // Message creation time
+	Id         int64  `protobuf:"varint,1,opt,name=id,proto3" json:"id"`                                     // Message ID
+	ToUserId   int64  `protobuf:"varint,2,opt,name=to_user_id,json=toUserId,proto3" json:"to_user_id"`       // ID of the message recipient
+	FromUserId int64  `protobuf:"varint,3,opt,name=from_user_id,json=fromUserId,proto3" json:"from_user_id"` // ID of the message sender
+	Content    string `protobuf:"bytes,4,opt,name=content,proto3" json:"content"`                            // Message content
+	CreateTime int64  `protobuf:"varint,5,opt,name=create_time,json=createTime,proto3" json:"create_time"`   // Message creation time
 }
 
 func (x *Message) Reset() {
@@ -303,7 +303,7 @@ type MessageActionResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
 }
 
 func (x *MessageActionResponse) Reset() {

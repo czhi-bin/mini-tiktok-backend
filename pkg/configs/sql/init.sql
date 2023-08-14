@@ -22,13 +22,13 @@ CREATE TABLE `users` (
 DROP TABLE IF EXISTS `videos`;
 CREATE TABLE `videos` (
     `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'VIDEO ID',
-    `auther_id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'AUTHOR ID',
+    `author_id` BIGINT NOT NULL COMMENT 'AUTHOR ID',
     `cover_url` VARCHAR(255) NOT NULL COMMENT 'VIDEO COVER URL',
     `video_url` VARCHAR(255) NOT NULL COMMENT 'VIDEO URL',
     `title` VARCHAR(255) NOT NULL COMMENT 'VIDEO TITLE',
     `publish_time` TIMESTAMP NOT NULL COMMENT 'VIDEO PUBLISH TIME',
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`auther_id`) REFERENCES `users` (`id`)
+    FOREIGN KEY (`author_id`) REFERENCES `users` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'VIDEOS TABLE';
 
 -- ----------------------------
@@ -43,7 +43,7 @@ CREATE TABLE `likes` (
     `deleted_at` TIMESTAMP NULL DEFAULT NULL COMMENT 'UNLIKE TIME',
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-    FOREIGN KEY (`video_id`) REFERENCES `videos` (`id`),
+    FOREIGN KEY (`video_id`) REFERENCES `videos` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT = 'LIKES TABLE';
 
 -- ----------------------------

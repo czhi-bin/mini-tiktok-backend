@@ -91,7 +91,7 @@ type RelationActionResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
 }
 
 func (x *RelationActionResponse) Reset() {
@@ -201,8 +201,8 @@ type RelationFollowListResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32          `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string         `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	UserList   []*common.User `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list,omitempty"`        // List of user information
+	StatusMsg  string         `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	UserList   []*common.User `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list"`        // List of user information
 }
 
 func (x *RelationFollowListResponse) Reset() {
@@ -319,8 +319,8 @@ type RelationFollowerListResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32          `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string         `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	UserList   []*common.User `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list,omitempty"`        // List of user information
+	StatusMsg  string         `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	UserList   []*common.User `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list"`        // List of user information
 }
 
 func (x *RelationFollowerListResponse) Reset() {
@@ -437,8 +437,8 @@ type RelationFriendListResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32         `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string        `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	UserList   []*FriendUser `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list,omitempty"`        // List of user information
+	StatusMsg  string        `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	UserList   []*FriendUser `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list"`        // List of user information
 }
 
 func (x *RelationFriendListResponse) Reset() {
@@ -499,8 +499,8 @@ type FriendUser struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`                 // latest chat messages with this friend
-	MsgType int64  `protobuf:"varint,3,opt,name=msg_type,json=msgType,proto3" json:"msg_type,omitempty"` // 0 - Messages current requested by the user, 1 - Messages sent by the current requesting user
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message"`                 // latest chat messages with this friend
+	MsgType int64  `protobuf:"varint,3,opt,name=msg_type,json=msgType,proto3" json:"msg_type"` // 0 - Messages current requested by the user, 1 - Messages sent by the current requesting user
 }
 
 func (x *FriendUser) Reset() {
@@ -554,7 +554,7 @@ type FriendUser_User struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	User *FriendUser_User `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	User *FriendUser_User `protobuf:"bytes,1,opt,name=user,proto3" json:"user"`
 }
 
 func (x *FriendUser_User) Reset() {

@@ -91,7 +91,7 @@ type PublishActionResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,"`     // Status description
 }
 
 func (x *PublishActionResponse) Reset() {
@@ -201,8 +201,8 @@ type PublishListResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32           `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	VideoList  []*common.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`     // List of videos published by the user
+	StatusMsg  string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	VideoList  []*common.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list"`     // List of videos published by the user
 }
 
 func (x *PublishListResponse) Reset() {

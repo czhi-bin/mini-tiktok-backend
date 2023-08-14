@@ -107,8 +107,8 @@ type CommentActionResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32    `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string   `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	Comment    *Comment `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`                          //Comment content returned for successful comment posting, no need to fetch the entire list again
+	StatusMsg  string   `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	Comment    *Comment `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment"`                          //Comment content returned for successful comment posting, no need to fetch the entire list again
 }
 
 func (x *CommentActionResponse) Reset() {
@@ -169,10 +169,10 @@ type Comment struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         int64        `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`                                  // Comment ID
-	User       *common.User `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`                               // Commenting user information
-	Content    string       `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`                         // Comment content
-	CreateDate string       `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"` // Comment creation date in the format mm-dd
+	Id         int64        `protobuf:"varint,1,opt,name=id,proto3" json:"id"`                                  // Comment ID
+	User       *common.User `protobuf:"bytes,2,opt,name=user,proto3" json:"user"`                               // Commenting user information
+	Content    string       `protobuf:"bytes,3,opt,name=content,proto3" json:"content"`                         // Comment content
+	CreateDate string       `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date"` // Comment creation date in the format mm-dd
 }
 
 func (x *Comment) Reset() {
@@ -296,8 +296,8 @@ type CommentListResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode  int32      `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"`   // 0 - success, others - failure
-	StatusMsg   string     `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`       // Status description
-	CommentList []*Comment `protobuf:"bytes,3,rep,name=comment_list,json=commentList,proto3" json:"comment_list,omitempty"` // Comment list
+	StatusMsg   string     `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`       // Status description
+	CommentList []*Comment `protobuf:"bytes,3,rep,name=comment_list,json=commentList,proto3" json:"comment_list"` // Comment list
 }
 
 func (x *CommentListResponse) Reset() {

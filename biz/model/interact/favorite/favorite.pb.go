@@ -91,7 +91,7 @@ type FavoriteActionResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32  `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
+	StatusMsg  string `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
 }
 
 func (x *FavoriteActionResponse) Reset() {
@@ -145,7 +145,7 @@ type FavoriteListRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // User ID
+	UserId int64  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id"` // User ID
 	Token  string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`                  // User authentication token
 }
 
@@ -201,8 +201,8 @@ type FavoriteListResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32           `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	VideoList  []*common.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`     // List of videos liked by the user
+	StatusMsg  string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	VideoList  []*common.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list"`     // List of videos liked by the user
 }
 
 func (x *FavoriteListResponse) Reset() {

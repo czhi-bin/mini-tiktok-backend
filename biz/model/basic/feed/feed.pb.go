@@ -84,9 +84,9 @@ type FeedResponse struct {
 	unknownFields protoimpl.UnknownFields
 
 	StatusCode int32           `protobuf:"varint,1,opt,name=status_code,json=statusCode,proto3" json:"status_code"` // 0 - success, others - failure
-	StatusMsg  string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg,omitempty"`     // Status description
-	VideoList  []*common.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list,omitempty"`     // List of videos.
-	NextTime   int64           `protobuf:"varint,4,opt,name=next_time,json=nextTime,proto3" json:"next_time,omitempty"`       //The earliest submission time among the videos return this time, used as 'latest_time' for the next requests.
+	StatusMsg  string          `protobuf:"bytes,2,opt,name=status_msg,json=statusMsg,proto3" json:"status_msg"`     // Status description
+	VideoList  []*common.Video `protobuf:"bytes,3,rep,name=video_list,json=videoList,proto3" json:"video_list"`     // List of videos.
+	NextTime   int64           `protobuf:"varint,4,opt,name=next_time,json=nextTime,proto3" json:"next_time"`       //The earliest submission time among the videos return this time, used as 'latest_time' for the next requests.
 }
 
 func (x *FeedResponse) Reset() {
