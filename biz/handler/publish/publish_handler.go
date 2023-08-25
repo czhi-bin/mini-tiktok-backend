@@ -11,7 +11,18 @@ import (
 
 // @router /douyin/publish/action/ [POST]
 func Action(c *gin.Context) {
+	var err error
+	var req publishModel.PublishActionRequest
+	err = c.BindQuery(&req)
+	if err != nil {
+		c.JSON(http.StatusOK, publishModel.PublishActionResponse{
+			StatusCode: -1,
+			StatusMsg:  "Invalid parameters",
+		})
+		return
+	}
 
+	err = publishService.NewService(c).Action(&req)
 }
 
 // @router /douyin/publish/list/ [POST]

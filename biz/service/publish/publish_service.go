@@ -18,6 +18,12 @@ func NewService(c *gin.Context) *FavoriteService {
 	}
 }
 
+// Publishes a new video
+func (s *FavoriteService) Action(req *publishModel.PublishActionRequest) error {
+	return nil
+}
+
+// Returns the list of videos published by the user
 func (s *FavoriteService) List(req *publishModel.PublishListRequest) ([]*commonModel.Video, error) {
 	// TODO: implement
 	return nil, nil

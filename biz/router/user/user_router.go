@@ -10,7 +10,7 @@ import (
 func RegisterRoutes(r *gin.Engine) {
 	userGroup := r.Group("/douyin/user")
 
-	userGroup.GET("/", userHandler.User)
+	userGroup.GET("/", append(UserMw(), userHandler.User)...)
 	userGroup.POST("/register/", userHandler.Register)
-	userGroup.POST("/login/", userHandler.Login)
+	userGroup.POST("/login/", append(LoginMw(), userHandler.Login)...)
 }

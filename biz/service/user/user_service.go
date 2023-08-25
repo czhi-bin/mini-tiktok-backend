@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/czhi-bin/mini-tiktok-backend/biz/dal/db"
-	"github.com/czhi-bin/mini-tiktok-backend/biz/middleware/jwt"
 	userModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
 	commonModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
 	"github.com/czhi-bin/mini-tiktok-backend/pkg/utils"
@@ -58,35 +57,15 @@ func (s *UserService) Register(req *userModel.UserRegisterRequest) (user_id int6
 	return user_id, nil
 }
 
-func (s *UserService) Login(req *userModel.UserLoginRequest) (*UserAuth, error) {
-	user, err := db.GetUserByName(req.Username)
-	if err != nil {
-		return nil, err
-	}
-
-	if *user == (db.User{}) {
-		return nil, errors.New("user does not exist")
-	}
-
-	if !utils.VerifyPassword(req.Password, user.Password) {
-		return nil, errors.New("incorrect password")
-	}
-
-	token, err := jwt.GenerateToken(user.ID)
-	if err != nil {
-		return nil, errors.New("failed to generate token")
-	}
-
-	return &UserAuth{
-		UserId: user.ID,
-		Token:  token,
-	}, nil
-}
-
 // GetUserInfo returns the user info of queryUserId according to the current user
 func (s *UserService) GetUserInfo(req *userModel.UserRequest) (*commonModel.User, error) {
 	queryUserId := req.UserId
-	var currentUserId int64 = 0
+	id, exists := s.c.Get("current_user_id")
+	if !exists {
+		id = 0
+	}
+	currentUserId := id.(int64)
+
 
 	userInfo := &commonModel.User{Id: queryUserId}
 	errChan := make(chan error, 7)
@@ -145,7 +124,6 @@ func (s *UserService) GetUserInfo(req *userModel.UserRequest) (*commonModel.User
 		// check if the current user follows the user
 		// in this case, currentUser is the follower
 		if currentUserId != 0 {
-			// use for future use?...
 			isFollowing, err := db.IsFollowing(queryUserId, currentUserId)
 			if err != nil {
 				errChan <- err

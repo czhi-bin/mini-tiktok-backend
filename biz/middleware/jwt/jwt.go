@@ -1,91 +1,92 @@
 package jwt
 
 import (
-	// "net/http"
-	"strconv"
+	"net/http"
+	"fmt"
 	"time"
 
-	// "github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/gin-gonic/gin"
+	jwt "github.com/appleboy/gin-jwt/v2"
 
-	// "github.com/czhi-bin/mini-tiktok-backend/biz/model/common"
-	// model "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
+	"github.com/czhi-bin/mini-tiktok-backend/biz/dal/db"
+	userModel "github.com/czhi-bin/mini-tiktok-backend/biz/model/basic/user"
+	"github.com/czhi-bin/mini-tiktok-backend/pkg/utils"
 )
 
-func GenerateToken(UserId int64) (string, error) {
-	claims := jwt.MapClaims{
-		"iat": time.Now().Unix(),
-		"exp": time.Now().Add(time.Hour * 24 * 7).Unix(),
-		"iss": "mini-tiktok-backend",
-		"aud": strconv.FormatInt(UserId, 10),
-	}
+var (
+	JWTMiddleWare 	*jwt.GinJWTMiddleware
+	identityKey 	= "user_id"
+)
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString([]byte("dnekcba-kotkit-inim"))
+func Init() {
+	var err error
+	JWTMiddleWare, err = jwt.New(&jwt.GinJWTMiddleware{
+		Realm:	   			"mini-tiktok-backend",
+		SigningAlgorithm: 	"HS256",
+		Key: 				[]byte("dnekcba-kotkit-inim"),
+		Timeout: 			time.Hour,
+		MaxRefresh: 		time.Hour * 24,
+		IdentityKey: 		identityKey,
+		TokenLookup: 		"query:token, form:token",
+
+		// To verify password with hashedPassword in DB
+		// Returns UserId as the verifier
+		Authenticator: func(c *gin.Context) (interface{}, error) {
+			var req userModel.UserLoginRequest
+			if err := c.Bind(&req); err != nil {
+				return nil, err
+			}
+			
+			user, err := db.GetUserByName(req.Username)
+			if err != nil {
+				return nil, err
+			}
+			if ok := utils.VerifyPassword(req.Password, user.Password); !ok {
+				return nil, jwt.ErrFailedAuthentication
+			}
+
+			c.Set("user_id", user.ID)
+			return user.ID, nil
+		},
+
+		// Sets the payload in the token
+		PayloadFunc: func(data interface{}) jwt.MapClaims {
+			if v, ok := data.(int64); ok {
+				return jwt.MapClaims{
+					"aud": v,
+				}
+			}
+			return jwt.MapClaims{}
+		},
+
+		// Build login response if password is verified correctly
+		LoginResponse: func(c *gin.Context, code int, token string, expire time.Time) {
+			c.Set("token", token)
+			c.Next()
+		},
+
+		// Verify token and get the id of the logged-in user
+		Authorizator: func(data interface{}, c *gin.Context) bool {
+			fmt.Println("AUTHORIZATOR CALLED")
+			fmt.Println("data: ", data)
+			if v, ok := data.(int64); ok {
+				currentUserId := int64(v)
+				c.Set("current_user_id", currentUserId)
+				return true
+			}
+			return false
+		},
+
+		// Validation failed
+		Unauthorized: func(c *gin.Context, code int, message string) {
+			c.JSON(http.StatusOK, userModel.UserLoginResponse{
+				StatusCode: -1,
+				StatusMsg: message,
+			})
+		},
+	})
+	
 	if err != nil {
-		return "", err
+		panic("JWT init Error: " + err.Error())
 	}
-
-	return tokenString, nil
 }
-
-func ParseToken(tokenString string) (jwt.MapClaims, error) {
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("dnekcba-kotkit-inim"), nil
-	},	jwt.WithValidMethods([]string{"HS256"}),
-		jwt.WithIssuer("mini-tiktok-backend"))
-	if err != nil {
-		return nil, err
-	}
-
-	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return claims, nil
-	}
-
-	return nil, jwt.ErrTokenUnverifiable
-}
-
-// func JWTMiddleWare() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		var req model.UserLoginRequest
-// 		err := c.BindQuery(&req)
-// 		tokenString := c.GetHeader("Authorization")
-// 		if tokenString == "" {
-// 			c.JSON(http.StatusOK, common.CommonResponse{
-// 				StatusCode: -1,
-// 				StatusMsg: "Unauthorized (No token))",
-// 			})
-// 			c.Abort()
-// 			return
-// 		}
-
-// 		claims, err := ParseToken(tokenString)
-// 		if err != nil {
-// 			c.JSON(http.StatusOK, common.CommonResponse{
-// 				StatusCode: -1,
-// 				StatusMsg: "Invalid token (Invalid signature))",
-// 			})
-// 			c.Abort()
-// 			return
-// 		}
-
-// 		_, err = strconv.ParseInt(claims["aud"].(string), 10, 64)
-// 		if err != nil {
-// 			c.JSON(http.StatusOK, common.CommonResponse{
-// 				StatusCode: -1,
-// 				StatusMsg: "Invalid token (Invalid user id)",
-// 			})
-// 			c.Abort()
-// 			return
-// 		}
-
-// 		// if UserId != c. {
-// 		// 	c.JSON(http.StatusOK, common.CommonResponse{
-// 		// 		StatusCode: -1,
-// 		// 		StatusMsg: "Invalid token (Invalid user id)",
-// 		// 	})
-// 		// 	c.Abort()
-// 		// }
-// 		c.Next()
-// 	}
-// }
